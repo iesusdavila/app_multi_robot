@@ -1,0 +1,10 @@
+*.pyc
+qtcreator-*
+*.user
+*~
+
+# Emacs
+.#*
+
+# Catkin custom files
+CATKIN_IGNORE
