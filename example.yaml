@@ -1,0 +1,8 @@
+robots:
+  - name: Nombre del robot
+    control_type: String del control del robot,
+    has_camera: bool
+    model_name: Nombre del modelo
+    model_urdf_path: Urdf del modelo
+    model_sdf_path: sdf del modelo
+    model_image: imagen del modelo

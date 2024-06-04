@@ -1,0 +1,13 @@
+models:
+- imagen: /home/robot/app_multirobot/app_multi_robot/assets/images/Tburger.jpg
+  name: TBurger
+  rutaSDF: /rutaSDF
+  rutaURDF: /rutaURDF
+- imagen: /home/robot/app_multirobot/app_multi_robot/assets/images/Tburger.jpg
+  name: TBurger2
+  rutaSDF: /rutaSDF2
+  rutaURDF: /rutaURDF2
+- imagen: /home/robot/app_multirobot/app_multi_robot/assets/images/Tburger.jpg
+  name: Tburger3
+  rutaSDF: /ruta3
+  rutaURDF: /ruta3
