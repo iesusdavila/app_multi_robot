@@ -1,28 +1,23 @@
-import flet as ft
+import subprocess
 
-def main(page: ft.Page):
-    selected_files = ft.Text()
-    def pick_files_result(e: ft.FilePickerResultEvent):
-        selected_files.value = (
-            ", ".join(map(lambda f: f.name, e.files)) if e.files else "Cancelled!"
-        )
-        selected_files.update()
+def open_file_explorer() -> str:
+    try:
+        # Ejecutar el comando zenity para abrir el explorador de archivos
+        result = subprocess.run(['zenity','--file-selection'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        
+        # Verificar si el comando se ejecutó correctamente
+        if result.returncode == 0:
+            # Obtener la ruta seleccionada del stdout
+            file_path = result.stdout.decode('utf-8').strip()
+            return file_path
+        else:
+            # Si se presiona "Cancelar" o hay un error
+            print(f"Error: {result.stderr.decode('utf-8').strip()}")
+            return ""
+    except Exception as e:
+        print(f"Exception: {e}")
+        return ""
 
-    pick_files_dialog = ft.FilePicker(on_result=pick_files_result)
-
-    page.overlay.append(pick_files_dialog)
-
-    page.add(
-        ft.Row(
-            [
-                ft.ElevatedButton(
-                    "Pick files",
-                    icon=ft.icons.UPLOAD_FILE,
-                    on_click=lambda _: pick_files_dialog.pick_files(initial_directory="/home/robot"),
-                ),
-                selected_files,
-            ]
-        )
-    )
-
-ft.app(target=main)
+# Ejemplo de uso
+selected_file_path = open_file_explorer()
+print(f"Ruta seleccionada: {selected_file_path}")

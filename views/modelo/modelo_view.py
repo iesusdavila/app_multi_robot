@@ -1,6 +1,7 @@
 import flet as ft
 from funciones import obtain_model_list, add_model
 from user_controls.modelo import Modelo
+from user_controls.file_selector import FileSelector
 
 def ModeloView(page: ft.Page):
     title = 'Modelo'
@@ -21,27 +22,11 @@ def ModeloView(page: ft.Page):
     construir_tabla(modelo_list)
     modelos_label = ft.Text("Modelos disponibles")
     nombre_input = ft.TextField(label="Nombre del modelo")
-    urdf_input = ft.TextField(label="Ruta URDF")
-    sdf_input = ft.TextField(label="Ruta SDF")
+    urdf_input = ft.Text(value="Ruta URDF")
+    urdf_picker = FileSelector()
+    sdf_input = ft.Text(value="Ruta SDF")
+    sdf_picker = FileSelector()
     imagen_input = ft.TextField(label="Imagen")
-
-    def on_file_picked(e: ft.FilePickerResultEvent):
-        if e.files:
-            for file in e.files:
-                file_name = file.name
-                file_content = file.read()
-                
-                # Guardar el archivo en una ubicación específica
-                save_path = f"/ruta/deseada/{file_name}"
-                with open(save_path, 'wb') as f:
-                    f.write(file_content)
-                
-                # Mostrar la imagen cargada en la interfaz
-                page.controls.append(ft.Image(src=f"/ruta/deseada/{file_name}"))
-                page.update()
-
-    file_picker = ft.FilePicker(on_result=on_file_picked)
-    upload_button = ft.ElevatedButton(text="Cargar Imagen", on_click=lambda _: file_picker.pick_files())
 
     def on_page_load():
         pass
@@ -54,7 +39,7 @@ def ModeloView(page: ft.Page):
             imagen_input.value
         )
         add_model(nuevo_modelo)
-        modelo_list = obtain_model_list('/home/robot/app_multirobot/app_multi_robot/example2.yaml')
+        modelo_list = obtain_model_list('/home/robot/app_multirobot/app_multi_robot/models_register.yaml')
         construir_tabla(modelo_list)
         page.dialog.open = False
         page.update()
@@ -69,7 +54,9 @@ def ModeloView(page: ft.Page):
             content=ft.Column(controls=[
                 nombre_input,
                 urdf_input,
+                urdf_picker.build(),
                 sdf_input,
+                sdf_picker.build(),
                 imagen_input
             ]),
             actions=[
@@ -81,6 +68,11 @@ def ModeloView(page: ft.Page):
         page.dialog.open = True
         page.update()
 
+    def go_home(e):
+        page.go('/home')
+        page.update() 
+
+    button_go_home = ft.ElevatedButton(text="Regresar a Home", on_click=go_home)
     button_add_model = ft.ElevatedButton(text="Agregar Modelo", on_click=show_add_model_dialog)
 
     modelo_view = ft.SafeArea(
@@ -88,7 +80,8 @@ def ModeloView(page: ft.Page):
             controls=[
                 modelos_label,
                 modelo_table,
-                button_add_model
+                button_add_model,
+                button_go_home
             ]
         )
     )

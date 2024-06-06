@@ -1,4 +1,4 @@
-from modelo import Modelo
+from user_controls.modelo import Modelo
 """
 Robot :
     name: str,

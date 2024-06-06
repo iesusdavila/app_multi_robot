@@ -11,3 +11,11 @@ models:
   name: Tburger3
   rutaSDF: /ruta3
   rutaURDF: /ruta3
+- imagen: /home/robot/app_multirobot/app_multi_robot/assets/images/Tburger.jpg
+  name: andino
+  rutaSDF: /andinoSDF
+  rutaURDF: /andinoURDF
+- imagen: ''
+  name: ''
+  rutaSDF: ''
+  rutaURDF: ''
