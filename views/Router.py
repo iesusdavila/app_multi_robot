@@ -6,6 +6,7 @@ from views.login.login_view import LoginView
 from views.register.register_view import RegisterView
 from views.home.home_view import HomeView
 from views.modelo.modelo_view import ModeloView
+from views.worlds.worlds_view import WorldsView
 
 import flet as ft
 
@@ -17,7 +18,8 @@ class Router:
             "/": LoginView(page, myPyrebase),
             "/home": HomeView(page),
             "/add_model": ModeloView(page),
-            "/register": RegisterView(page, myPyrebase)
+            "/register": RegisterView(page, myPyrebase),
+            "/worlds": WorldsView(page)
         }
         self.body = ft.Container(content=self.routes['/']["view"])
 

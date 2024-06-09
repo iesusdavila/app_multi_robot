@@ -14,8 +14,7 @@ def ModeloView(page: ft.Page):
             fila = ft.Row(controls=[
                 ft.Text(modelo.nombre),
                 ft.Text(modelo.rutaURDF),
-                ft.Text(modelo.rutaSDF),
-                ft.Image(src=modelo.imagen, width=50, height=50)])
+                ft.Text(modelo.rutaSDF)])
             modelo_table.controls.append(fila)
         page.update()
     
@@ -26,7 +25,6 @@ def ModeloView(page: ft.Page):
     urdf_picker = FileSelector()
     sdf_input = ft.Text(value="Ruta SDF")
     sdf_picker = FileSelector()
-    imagen_input = ft.TextField(label="Imagen")
 
     def on_page_load():
         pass
@@ -36,7 +34,6 @@ def ModeloView(page: ft.Page):
             nombre_input.value,
             urdf_input.value,
             sdf_input.value,
-            imagen_input.value
         )
         add_model(nuevo_modelo)
         modelo_list = obtain_model_list('/home/robot/app_multirobot/app_multi_robot/models_register.yaml')
@@ -56,8 +53,7 @@ def ModeloView(page: ft.Page):
                 urdf_input,
                 urdf_picker.build(),
                 sdf_input,
-                sdf_picker.build(),
-                imagen_input
+                sdf_picker.build()
             ]),
             actions=[
                 ft.TextButton("Guardar", on_click=save_model),

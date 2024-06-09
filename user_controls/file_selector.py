@@ -17,26 +17,25 @@ def open_file_explorer() -> str:
 class FileSelector(ft.UserControl):
     def __init__(self):
         super().__init__()
-        self.file_path_text = ft.Text("Seleccionar Archivo", expand=2)
+        self.file_path_text = ""
+        self.file_path_label = ft.Text("Seleccionar Archivo", expand=2)
         self.select_button = ft.IconButton(icon=ft.icons.ARROW_CIRCLE_LEFT_OUTLINED, on_click=self.select_file, expand=1)
 
     def select_file(self, e):
         file_path = open_file_explorer()
-        self.file_path_text.value = file_path
+        self.file_path_text = file_path
+        self.file_path_text.value = "Ruta seleccionada correctamente"
         self.file_path_text.update()
 
     def build(self):
         return ft.Row(
             controls=[
-                self.file_path_text,
+                self.file_path_label,
                 self.select_button
             ],
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN
         )
-
-# # Ejemplo de uso en una vista
-# def main(page: ft.Page):
-#     file_selector = FileSelector()
-#     page.add(file_selector)
-
-# ft.app(target=main)
+    
+    def reset(self):
+        self.file_path_text = ""
+        self.file_path_label = ft.Text("Seleccionar Archivo", expand=2)

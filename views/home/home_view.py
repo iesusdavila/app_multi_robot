@@ -31,7 +31,7 @@ def HomeView(page: ft.Page):
         page.go("/add_model")
         page.update()
 
-    robot_list_view = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
+    robot_list_view = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True, height=100, width=300)
 
     def build_robot_list(robot_list: list):
         robot_list_view.controls.clear()
@@ -44,9 +44,27 @@ def HomeView(page: ft.Page):
             robot_list_view.controls.append(fila)
         page.update()
 
-    add_robots_button = ft.ElevatedButton(text="Agregar robots", icon=ft.icons.ADD_BOX, on_click=show_add_robot)
-    add_models_button = ft.ElevatedButton(text="Agregar modelos", icon=ft.icons.ADD_ALERT, on_click=add_model_robot)
-    active_robot_text = ft.Text("Robots disponibles", size=30, style=ft.TextStyle(weight=ft.FontWeight.BOLD))
+    def go_worlds(e):
+        page.go("/worlds")
+        page.update()
+
+    add_robots_button = ft.ElevatedButton(
+        text="Agregar robots", 
+        icon=ft.icons.ADD_BOX, 
+        on_click=show_add_robot)
+    add_models_button = ft.ElevatedButton(
+        text="Agregar modelos", 
+        icon=ft.icons.ADD_ALERT, 
+        on_click=add_model_robot)
+    add_world_button = ft.ElevatedButton(
+        text="Agregar mundo",
+        icon=ft.icons.ADD_CARD,
+        on_click=go_worlds)
+    active_robot_text = ft.Text(
+        value="Robots disponibles", 
+        size=30, 
+        style=ft.TextStyle(weight=ft.FontWeight.BOLD), 
+        text_align=ft.TextAlign.CENTER)
 
     build_robot_list(all_robots)
 
@@ -90,12 +108,13 @@ def HomeView(page: ft.Page):
 
     myPage = ft.SafeArea(
         expand=True,
-        content=ft.Row(
+        content=ft.Column(
             controls=[
                 active_robot_text,
-                robot_list_view,
+                ft.Container(robot_list_view),
                 add_robots_button,
-                add_models_button
+                add_models_button,
+                add_world_button
             ]
         )
     )

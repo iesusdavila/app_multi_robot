@@ -32,7 +32,7 @@ def obtain_model_list(path: str) -> list:
             else:
                 if data["models"]:
                     for modelo in data["models"]:
-                        model_list.append(Modelo(modelo["name"], modelo["rutaURDF"], modelo["rutaSDF"], modelo["imagen"]))
+                        model_list.append(Modelo(modelo["name"], modelo["rutaURDF"], modelo["rutaSDF"]))
                     return model_list
                 else:
                     return model_list
@@ -44,8 +44,7 @@ def model_to_yaml(modelo: Modelo) -> dict:
     return {
         'name': modelo.nombre,
         'rutaURDF': modelo.rutaURDF,
-        'rutaSDF': modelo.rutaSDF,
-        'imagen': modelo.imagen
+        'rutaSDF': modelo.rutaSDF
     }
 
 def add_model(modelo: Modelo):
@@ -89,7 +88,7 @@ def obtain_robot_list(path: str) -> list:
             else:
                 if data["robots"]:
                     for robot in data["robots"]:
-                        modelo_robot = Modelo(robot["model_name"], robot["model_urdf_path"], robot["model_sdf_path"], robot["model_image"])
+                        modelo_robot = Modelo(robot["model_name"], robot["model_urdf_path"], robot["model_sdf_path"])
                         robot_list.append(Robot(robot["name"], modelo_robot, robot["control_type"], robot["has_camera"]))
                     return robot_list
                 else:
@@ -105,8 +104,7 @@ def robot_to_yaml(robot: Robot) -> dict:
         'has_camera': robot.has_camera,
         'model_name': robot.modelo.nombre,
         'model_urdf_path': robot.modelo.rutaURDF,
-        'model_sdf_path': robot.modelo.rutaSDF,
-        'model_image': robot.modelo.imagen
+        'model_sdf_path': robot.modelo.rutaSDF
     }
 
 def add_robot(robot: Robot):

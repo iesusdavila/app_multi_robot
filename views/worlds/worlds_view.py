@@ -1,36 +1,39 @@
 import flet as ft
 from funciones import obtain_world_list, add_world
 from user_controls.world import World
+from user_controls.file_selector import FileSelector
 
 def WorldsView(page: ft.Page):
     title = "Worlds"
     world_list = obtain_world_list("/home/robot/app_multirobot/app_multi_robot/worlds_register.yaml")
 
-    world_label = ft.Text(value='Mundos disponibles')
-    world_listview = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
-
-    name_input = ft.TextField(label="Nombre mundo")
-    world_input = ft.TextField(label="Ruta world")
-    map_input = ft.TextField(label="Ruta map")
-
-    construir_tabla(world_list)
-
-    def show_add_world(e):
-        page.dialog = ft.AlertDialog(
-            title=ft.Text('Agregar mundo'),
-            content=ft.Column(
-                controls=[
-
-                ]),
-            actions=[
-                ft.TextButton("Guardar", on_click=save_world),
-                ft.TextButton("Cancelar", on_click=close_dialog)
-            ],
-            actions_alignment=ft.MainAxisAlignment.END
-        )
-
-    add_world_button = ft.ElevatedButton(text="Agregar robots", icon=ft.icons.ADD_BOX, on_click=show_add_world)
+    world_label = ft.Text(
+        value='Mundos disponibles', 
+        size=30, 
+        style=ft.TextStyle(weight=ft.FontWeight.BOLD), 
+        text_align=ft.TextAlign.CENTER)
     
+    world_listview = ft.ListView(
+        expand=1, 
+        spacing=10, 
+        padding=20, 
+        auto_scroll=True,
+        height=100, 
+        width=300)
+
+    name_input = ft.TextField(
+        label="Nombre mundo")
+    
+    world_path_label = ft.Text(
+        value="Ruta del mundo")
+    
+    map_label = ft.Text(
+        value="Ruta del mapa")
+    
+    world_path_picker = FileSelector()
+
+    map_path = FileSelector()
+
     def construir_tabla(world_list: list[World]):
         world_listview.controls.clear()
         for world in world_list:
@@ -40,10 +43,42 @@ def WorldsView(page: ft.Page):
                 ft.Text(world.map_path)])
             world_listview.controls.append(fila)
         page.update()
+
+    construir_tabla(world_list)
+
+    def show_add_world(e):
+        page.dialog = ft.AlertDialog(
+            title=ft.Text('Agregar mundo'),
+            content=ft.Column(
+                controls=[
+                    name_input,
+                    world_path_label,
+                    world_path_picker,
+                    map_label,
+                    map_path
+                ]),
+            actions=[
+                ft.TextButton("Guardar", on_click=save_world),
+                ft.TextButton("Cancelar", on_click=close_dialog)
+            ],
+            actions_alignment=ft.MainAxisAlignment.END
+        )
+        page.dialog.open = True
+        page.update()
+
+    add_world_button = ft.ElevatedButton(
+        text="Agregar mundo", 
+        icon=ft.icons.ADD_BOX, 
+        on_click=show_add_world)
     
     def go_home(e):
         page.go('/home')
         page.update() 
+
+    add_return = ft.ElevatedButton(
+        text="Regresar a home", 
+        icon=ft.icons.ADD_CARD, 
+        on_click=go_home)
 
     def close_dialog(e):
         page.dialog.open = False
@@ -55,15 +90,15 @@ def WorldsView(page: ft.Page):
     def save_world(e):
         new_world = World(
             name_input.value,
-            world_input.value,
-            map_input.value
+            world_path_picker.file_path_text,
+            map_path.file_path_text
         )
         add_world(new_world)
         world_list = obtain_world_list("/home/robot/app_multirobot/app_multi_robot/worlds_register.yaml")
         construir_tabla(world_list)
         name_input.value = ''
-        world_input.value = ''
-        map_input.value = ''
+        world_path_picker.reset()
+        map_path.reset()
         page.dialog.open = False
         page.update()
 
@@ -72,8 +107,9 @@ def WorldsView(page: ft.Page):
         content=ft.Column(
             controls=[
                 world_label,
-                world_listview,
-                add_world_button
+                ft.Container(world_listview, border=ft.border.all(width=1)),
+                add_world_button,
+                add_return
             ]
         )
     )
