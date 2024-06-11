@@ -7,7 +7,7 @@ def HomeView(page: ft.Page):
 
     modelos = obtain_model_list("/home/robot/app_multirobot/app_multi_robot/models_register.yaml")
     all_robots = obtain_robot_list("/home/robot/app_multirobot/app_multi_robot/robots_register.yaml")
-    control_types = ["Differential", "Omnidirectional", "Ackermann"]
+    control_types = ["Diferencial", "Omnidireccional", "Ackermann"]
 
     def show_add_robot(e):
         page.dialog = ft.AlertDialog(
@@ -48,6 +48,14 @@ def HomeView(page: ft.Page):
         page.go("/worlds")
         page.update()
 
+    def go_configure(e):
+        page.go("/configure")
+        page.update()
+
+    def go_execute(e):
+        page.go('/execute')
+        page.update()
+
     add_robots_button = ft.ElevatedButton(
         text="Agregar robots", 
         icon=ft.icons.ADD_BOX, 
@@ -62,9 +70,19 @@ def HomeView(page: ft.Page):
         on_click=go_worlds)
     active_robot_text = ft.Text(
         value="Robots disponibles", 
-        size=30, 
+        size=40, 
         style=ft.TextStyle(weight=ft.FontWeight.BOLD), 
         text_align=ft.TextAlign.CENTER)
+    add_configure_button = ft.ElevatedButton(
+        text="Configurar gazebo",
+        icon=ft.icons.AC_UNIT,
+        on_click=go_configure
+    )
+    execute_gazebo = ft.ElevatedButton(
+        text='Ejecutar mundos',
+        icon=ft.icons.WORK,
+        on_click=go_execute
+    )
 
     build_robot_list(all_robots)
 
@@ -90,8 +108,7 @@ def HomeView(page: ft.Page):
             name_input.value,
             modelo,
             combobox_control_type.value,
-            has_camera.value
-        )
+            has_camera.value)
         add_robot(new_robot)
         all_robots = obtain_robot_list("/home/robot/app_multirobot/app_multi_robot/robots_register.yaml")
         build_robot_list(all_robots)
@@ -109,14 +126,29 @@ def HomeView(page: ft.Page):
     myPage = ft.SafeArea(
         expand=True,
         content=ft.Column(
+            expand=True,
+            spacing=20,
             controls=[
-                active_robot_text,
-                ft.Container(robot_list_view),
+                ft.Container(
+                    active_robot_text, 
+                    alignment=ft.alignment.center),
+                ft.Row(
+                    controls=[
+                        ft.Container(expand=1),
+                        ft.Container(
+                            robot_list_view,
+                            expand=2,
+                            alignment=ft.alignment.center),
+                        ft.Container(expand=1)]),
                 add_robots_button,
                 add_models_button,
-                add_world_button
-            ]
-        )
+                add_world_button,
+                add_configure_button,
+                execute_gazebo
+            ],
+            alignment=ft.MainAxisAlignment.CENTER
+        ),
+        
     )
 
     def on_page_load():

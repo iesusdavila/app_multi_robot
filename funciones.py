@@ -1,5 +1,6 @@
 import yaml
 import os
+import subprocess
 from ament_index_python import get_package_share_path
 from user_controls.modelo import Modelo
 from user_controls.robot import Robot
@@ -156,3 +157,56 @@ def add_world(world: World):
         data = {'worlds': worlds_old}
         yaml.dump(data, file)
 
+def list_files_in_directory(directory_path: str) -> list:
+    """
+    List all .yaml or .yml files in the given directory.
+
+    :param directory_path: Path to the directory.
+    :return: List of .yaml or .yml file names in the directory.
+    """
+    try:
+        # Verificar si el path proporcionado es un directorio
+        response = list()
+        if not os.path.isdir(directory_path):
+            raise NotADirectoryError(f"El path proporcionado no es un directorio: {directory_path}")
+        
+        # Obtener la lista de archivos .yaml en el directorio
+        yaml_files = [
+            f for f in os.listdir(directory_path)
+            if os.path.isfile(os.path.join(directory_path, f)) and (f.endswith('.yaml'))
+        ]
+        for yaml in yaml_files:
+            response.append(yaml.split(".")[0])
+        return response
+    except Exception as e:
+        print(f"Error al listar archivos en el directorio: {e}")
+        return []
+
+def launch_simulation(config_path: str):
+    """
+    Launch a ROS2 simulation with the given configuration file.
+
+    :param config_path: Path to the configuration file.
+    """
+    try:
+        # Construir el comando a ejecutar
+        command = [
+            "ros2", "launch", "multi_robot_bringup", "multi_robot_simulation.launch.py",
+            f"sim_param_file:={config_path}", "navigation:=true"
+        ]
+
+        # Ejecutar el comando
+        result = subprocess.run(command, capture_output=True, text=True)
+
+        # Verificar el resultado
+        if result.returncode == 0:
+            print("Simulación lanzada exitosamente.")
+            print("Salida:")
+            print(result.stdout)
+        else:
+            print("Error al lanzar la simulación.")
+            print("Error:")
+            print(result.stderr)
+
+    except Exception as e:
+        print(f"Error al intentar lanzar la simulación: {e}")

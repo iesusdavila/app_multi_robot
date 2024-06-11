@@ -12,7 +12,6 @@ def WorldsView(page: ft.Page):
         size=30, 
         style=ft.TextStyle(weight=ft.FontWeight.BOLD), 
         text_align=ft.TextAlign.CENTER)
-    
     world_listview = ft.ListView(
         expand=1, 
         spacing=10, 
@@ -20,18 +19,13 @@ def WorldsView(page: ft.Page):
         auto_scroll=True,
         height=100, 
         width=300)
-
     name_input = ft.TextField(
         label="Nombre mundo")
-    
     world_path_label = ft.Text(
         value="Ruta del mundo")
-    
     map_label = ft.Text(
         value="Ruta del mapa")
-    
     world_path_picker = FileSelector()
-
     map_path = FileSelector()
 
     def construir_tabla(world_list: list[World]):

@@ -19,12 +19,14 @@ def ModeloView(page: ft.Page):
         page.update()
     
     construir_tabla(modelo_list)
-    modelos_label = ft.Text("Modelos disponibles")
+    modelos_label = ft.Text("Modelos disponibles", text_align=ft.TextAlign.CENTER)
     nombre_input = ft.TextField(label="Nombre del modelo")
     urdf_input = ft.Text(value="Ruta URDF")
     urdf_picker = FileSelector()
     sdf_input = ft.Text(value="Ruta SDF")
     sdf_picker = FileSelector()
+    nav_path_input = ft.Text(value="Ruta archivo navegacion")
+    nav_picker = FileSelector()
 
     def on_page_load():
         pass
@@ -32,9 +34,9 @@ def ModeloView(page: ft.Page):
     def save_model(e):
         nuevo_modelo = Modelo(
             nombre_input.value,
-            urdf_input.value,
-            sdf_input.value,
-        )
+            urdf_picker.file_path_text,
+            sdf_picker.file_path_text,
+            nav_picker.file_path_text)
         add_model(nuevo_modelo)
         modelo_list = obtain_model_list('/home/robot/app_multirobot/app_multi_robot/models_register.yaml')
         construir_tabla(modelo_list)
@@ -53,7 +55,9 @@ def ModeloView(page: ft.Page):
                 urdf_input,
                 urdf_picker.build(),
                 sdf_input,
-                sdf_picker.build()
+                sdf_picker.build(),
+                nav_path_input,
+                nav_picker.build()
             ]),
             actions=[
                 ft.TextButton("Guardar", on_click=save_model),
@@ -68,9 +72,12 @@ def ModeloView(page: ft.Page):
         page.go('/home')
         page.update() 
 
-    button_go_home = ft.ElevatedButton(text="Regresar a Home", on_click=go_home)
-    button_add_model = ft.ElevatedButton(text="Agregar Modelo", on_click=show_add_model_dialog)
-
+    button_go_home = ft.ElevatedButton(
+        text="Regresar a Home", 
+        on_click=go_home)
+    button_add_model = ft.ElevatedButton(
+        text="Agregar Modelo", 
+        on_click=show_add_model_dialog)
     modelo_view = ft.SafeArea(
         content=ft.Column(
             controls=[
@@ -81,7 +88,6 @@ def ModeloView(page: ft.Page):
             ]
         )
     )
-
     return {
         "view": modelo_view,
         "title": title,
