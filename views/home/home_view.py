@@ -31,16 +31,12 @@ def HomeView(page: ft.Page):
         page.go("/add_model")
         page.update()
 
-    robot_list_view = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True, height=100, width=300)
+    robot_list_view = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=False, height=100, width=300)
 
-    def build_robot_list(robot_list: list):
+    def build_robot_list(robot_list: list[Robot]):
         robot_list_view.controls.clear()
         for robot in robot_list:
-            fila = ft.Row(controls=[
-                ft.Text(robot.name),
-                ft.Text(robot.modelo.nombre),
-                ft.Text(robot.control_type),
-                ft.Text(robot.has_camera)])
+            fila = robot.build()
             robot_list_view.controls.append(fila)
         page.update()
 
@@ -134,12 +130,13 @@ def HomeView(page: ft.Page):
                     alignment=ft.alignment.center),
                 ft.Row(
                     controls=[
-                        ft.Container(expand=1),
+                        ft.Container(expand=1, bgcolor='black'),
                         ft.Container(
                             robot_list_view,
+                            bgcolor='blue',
                             expand=2,
                             alignment=ft.alignment.center),
-                        ft.Container(expand=1)]),
+                        ft.Container(expand=1, bgcolor='red')]),
                 add_robots_button,
                 add_models_button,
                 add_world_button,

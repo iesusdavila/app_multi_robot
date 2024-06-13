@@ -1,1 +1,4 @@
-worlds: []
+worlds:
+- map_path: /home/robot/multirobot_ws/src/multi_robot/multi_robot_navigation/maps/map_house.yaml
+  name: house 1
+  world_path: /home/robot/multirobot_ws/src/multi_robot/multi_robot_gazebo/worlds/house.world

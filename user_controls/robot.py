@@ -18,10 +18,19 @@ class Robot():
     def build(self):
         return ft.Row(
             controls=[
-                ft.Text(value=self.name),
-                ft.Text(value=self.modelo.nombre),
-                ft.Text(value=self.control_type)
-            ]
+                ft.Container(
+                    content=ft.Text(
+                        value=self.name, 
+                        expand= 1,
+                        text_align=ft.TextAlign.CENTER),
+                    bgcolor="gray",
+                    border=ft.border.all(1),
+                    expand=1),
+                ft.Text(value=self.modelo.nombre, expand= 1.5, text_align=ft.TextAlign.CENTER),
+                ft.Text(value=self.control_type, expand=1, text_align=ft.TextAlign.CENTER)
+            ],
+            height=30,
+            width=300
         )
     
     def yaml_configure(self) -> dict:

@@ -19,7 +19,11 @@ def ModeloView(page: ft.Page):
         page.update()
     
     construir_tabla(modelo_list)
-    modelos_label = ft.Text("Modelos disponibles", text_align=ft.TextAlign.CENTER)
+    modelos_label = ft.Text(
+        value="Modelos disponibles",
+        size=40, 
+        style=ft.TextStyle(weight=ft.FontWeight.BOLD),
+        text_align=ft.TextAlign.CENTER)
     nombre_input = ft.TextField(label="Nombre del modelo")
     urdf_input = ft.Text(value="Ruta URDF")
     urdf_picker = FileSelector()
@@ -40,6 +44,10 @@ def ModeloView(page: ft.Page):
         add_model(nuevo_modelo)
         modelo_list = obtain_model_list('/home/robot/app_multirobot/app_multi_robot/models_register.yaml')
         construir_tabla(modelo_list)
+        nombre_input.value = ''
+        urdf_picker.reset()
+        sdf_picker.reset()
+        nav_picker.reset()
         page.dialog.open = False
         page.update()
 
@@ -81,7 +89,9 @@ def ModeloView(page: ft.Page):
     modelo_view = ft.SafeArea(
         content=ft.Column(
             controls=[
-                modelos_label,
+                ft.Container(
+                    modelos_label,
+                    alignment=ft.alignment.center),
                 modelo_table,
                 button_add_model,
                 button_go_home

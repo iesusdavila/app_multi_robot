@@ -33,7 +33,7 @@ def obtain_model_list(path: str) -> list:
             else:
                 if data["models"]:
                     for modelo in data["models"]:
-                        model_list.append(Modelo(modelo["name"], modelo["rutaURDF"], modelo["rutaSDF"]))
+                        model_list.append(Modelo(modelo["name"], modelo["rutaURDF"], modelo["rutaSDF"], modelo['nav_path']))
                     return model_list
                 else:
                     return model_list
@@ -45,7 +45,8 @@ def model_to_yaml(modelo: Modelo) -> dict:
     return {
         'name': modelo.nombre,
         'rutaURDF': modelo.rutaURDF,
-        'rutaSDF': modelo.rutaSDF
+        'rutaSDF': modelo.rutaSDF,
+        'nav_path': modelo.nav_path
     }
 
 def add_model(modelo: Modelo):
@@ -89,7 +90,7 @@ def obtain_robot_list(path: str) -> list:
             else:
                 if data["robots"]:
                     for robot in data["robots"]:
-                        modelo_robot = Modelo(robot["model_name"], robot["model_urdf_path"], robot["model_sdf_path"])
+                        modelo_robot = Modelo(robot["model_name"], robot["model_urdf_path"], robot["model_sdf_path"], robot['model_nav_path'])
                         robot_list.append(Robot(robot["name"], modelo_robot, robot["control_type"], robot["has_camera"]))
                     return robot_list
                 else:
@@ -105,7 +106,8 @@ def robot_to_yaml(robot: Robot) -> dict:
         'has_camera': robot.has_camera,
         'model_name': robot.modelo.nombre,
         'model_urdf_path': robot.modelo.rutaURDF,
-        'model_sdf_path': robot.modelo.rutaSDF
+        'model_sdf_path': robot.modelo.rutaSDF,
+        'model_nav_path': robot.modelo.nav_path
     }
 
 def add_robot(robot: Robot):
@@ -141,7 +143,7 @@ def obtain_world_list(path: str) -> list:
                 if data['worlds']:
                     for world in data['worlds']:
                         world_item = World(world['name'], world['world_path'], world['map_path'])
-                        world_list.append(world_list)
+                        world_list.append(world_item)
                     return world_list
                 else:
                     return world_list
