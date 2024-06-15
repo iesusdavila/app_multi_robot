@@ -38,5 +38,5 @@ class Robot():
             'name': self.name,
             'urdf_path': self.modelo.rutaURDF,
             'sdf_path': self.modelo.rutaSDF,
-            'nav_param_path': ""
+            'nav_param_path': self.modelo.nav_path
         }

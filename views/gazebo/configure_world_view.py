@@ -190,16 +190,19 @@ def ConfigureWorld(page: ft.Page):
         controls=[ft.Text(value="No hay robots agregados")]
     )
 
-    def add_value_number(e):
-        value = int(num_robots_input.value) + 1
+    def update_num_robots_input(value):
         num_robots_input.value = str(value)
         num_robots_input.update()
+        on_num_robots_input_change()
+
+    def add_value_number(e):
+        value = int(num_robots_input.value) + 1
+        update_num_robots_input(value)
 
     def reduce_value_number(e):
         value = int(num_robots_input.value) - 1
         if value >= 0:
-            num_robots_input.value = str(value)
-            num_robots_input.update()
+            update_num_robots_input(value)
 
     def close_dialog(e):
         page.dialog.open = False
@@ -258,18 +261,25 @@ def ConfigureWorld(page: ft.Page):
         page.dialog.open = True
         page.update()
 
+    def on_num_robots_input_change():
+        print("El valor de num_robots_input ha cambiado:", num_robots_input.value)
+
     label_title = ft.Text(
-        value="Configurar mundo")
+        value="Configurar mundo en gazebo",
+        style=ft.TextStyle(weight=ft.FontWeight.BOLD),
+        size=40)
     world_combobox = ft.Dropdown(
         label="Mundo",
         hint_text="Elige el mundo",
+        width=300,
         options=[ft.dropdown.Option(world.name) for world in world_list])
     label_num_robots = ft.Text(
-        value="Numero de robots")
+        value="Numero de robots",
+        style=ft.TextStyle(weight=ft.FontWeight.BOLD))
     num_robots_input = ft.TextField(
         value="0",
-        disabled=True,
         text_align="right",
+        on_change=lambda e: on_num_robots_input_change(),
         width=100)
     add_value = ft.IconButton(
         icon=ft.icons.ADD_CIRCLE,
@@ -326,24 +336,53 @@ def ConfigureWorld(page: ft.Page):
     add_robot_button = ft.IconButton(
         icon=ft.icons.ADD_CIRCLE,
         on_click=add_robot)
+    
+    def return_home(e):
+        page.go("/")
+        page.update()
+
+    return_home_button = ft.ElevatedButton(
+        text="Regresar a home",
+        icon=ft.icons.HOME,
+        on_click=return_home
+    )
 
     configure_view = ft.SafeArea(
         content=ft.Column(
             controls=[
-                label_title,
-                world_combobox,
-                ft.Row(
-                    controls=[
-                        label_num_robots,
-                        num_robots_input,
-                        add_value,
-                        reduce_value
-                    ]
-                ),
-                widget_robots,  # Asegúrate de que este sea parte del árbol de controles
-                add_robot_button,
-                save_button
-            ]
+                ft.Container(
+                    content=label_title,
+                    alignment=ft.alignment.center),
+                ft.Container(
+                    content=world_combobox,
+                    alignment=ft.alignment.center),
+                ft.Container(
+                    content=label_num_robots,
+                    alignment=ft.alignment.center),
+                ft.Container(
+                    content=ft.Row(
+                        controls=[
+                            num_robots_input,
+                            add_value,
+                            reduce_value
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER
+                    ),
+                    alignment=ft.alignment.center),
+                ft.Container(
+                    content=widget_robots,
+                    alignment=ft.alignment.center),  
+                ft.Container(
+                    content=add_robot_button,
+                    alignment=ft.alignment.center),
+                ft.Container(
+                    content=save_button,
+                    alignment=ft.alignment.center),
+                ft.Container(
+                    content=return_home_button,
+                    alignment=ft.alignment.center)
+            ],
+            spacing=20
         )
     )
 

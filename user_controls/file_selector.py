@@ -40,5 +40,5 @@ class FileSelector(ft.UserControl):
     
     def reset(self):
         self.file_path_text = ""
-        self.file_path_label = ft.Text("Seleccionar Archivo", expand=2)
+        self.file_path_label.value = "Seleccionar Archivo"
         self.file_path_label.update()

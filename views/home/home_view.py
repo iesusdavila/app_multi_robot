@@ -7,17 +7,23 @@ def HomeView(page: ft.Page):
 
     modelos = obtain_model_list("/home/robot/app_multirobot/app_multi_robot/models_register.yaml")
     all_robots = obtain_robot_list("/home/robot/app_multirobot/app_multi_robot/robots_register.yaml")
-    control_types = ["Diferencial", "Omnidireccional", "Ackermann"]
+    control_types = ["Diferencial", "Omnidireccional", "Ackermann", "Aerial"]
 
     def show_add_robot(e):
         page.dialog = ft.AlertDialog(
+            modal=True,
+            elevation=1,
             title=ft.Text("Agregar robot"),
-            content=ft.Column(controls=[
-                name_input,
-                combobox_model,
-                combobox_control_type,
-                has_camera
-            ]),
+            title_padding=15,
+            content=ft.Container(
+                content=ft.Column(
+                    controls=[
+                        name_input,
+                        combobox_model,
+                        combobox_control_type,
+                        has_camera]),
+                width=500,
+                height=300),
             actions=[
                 ft.TextButton("Guardar", on_click=save_robot),
                 ft.TextButton("Cancelar", on_click=close_dialog)
@@ -55,15 +61,18 @@ def HomeView(page: ft.Page):
     add_robots_button = ft.ElevatedButton(
         text="Agregar robots", 
         icon=ft.icons.ADD_BOX, 
-        on_click=show_add_robot)
+        on_click=show_add_robot,
+        width=200)
     add_models_button = ft.ElevatedButton(
         text="Agregar modelos", 
         icon=ft.icons.ADD_ALERT, 
-        on_click=add_model_robot)
+        on_click=add_model_robot,
+        width=200)
     add_world_button = ft.ElevatedButton(
         text="Agregar mundo",
         icon=ft.icons.ADD_CARD,
-        on_click=go_worlds)
+        on_click=go_worlds,
+        width=200)
     active_robot_text = ft.Text(
         value="Robots disponibles", 
         size=40, 
@@ -72,17 +81,20 @@ def HomeView(page: ft.Page):
     add_configure_button = ft.ElevatedButton(
         text="Configurar gazebo",
         icon=ft.icons.AC_UNIT,
-        on_click=go_configure
+        on_click=go_configure,
+        width=200
     )
     execute_gazebo = ft.ElevatedButton(
         text='Ejecutar mundos',
         icon=ft.icons.WORK,
-        on_click=go_execute
+        on_click=go_execute,
+        width=200
     )
 
     build_robot_list(all_robots)
 
-    name_input = ft.TextField(label="Nombre robot")
+    name_input = ft.TextField(
+        label="Nombre robot")
     combobox_model = ft.Dropdown(
             options=[ft.dropdown.Option(modelo.nombre) for modelo in modelos],
             label="Selecciona un modelo",
@@ -91,7 +103,8 @@ def HomeView(page: ft.Page):
             options=[ft.dropdown.Option(control_type) for control_type in control_types],
             label="Selecciona un control_type"
         )
-    has_camera = ft.Switch(label="Camara", value=False)
+    has_camera = ft.Switch(
+        label="Camara", value=False)
 
     def find_model_by_name(name: str, models: list[Modelo]) -> Modelo:
         for modelo in models:
@@ -116,6 +129,10 @@ def HomeView(page: ft.Page):
         page.update()
 
     def close_dialog(e):
+        combobox_control_type.value = ""
+        combobox_model.value = ""
+        name_input.value = ""
+        has_camera.value = False
         page.dialog.open = False
         page.update()
 
@@ -123,25 +140,28 @@ def HomeView(page: ft.Page):
         expand=True,
         content=ft.Column(
             expand=True,
-            spacing=20,
+            spacing=40,
             controls=[
                 ft.Container(
                     active_robot_text, 
                     alignment=ft.alignment.center),
                 ft.Row(
                     controls=[
-                        ft.Container(expand=1, bgcolor='black'),
+                        ft.Column(
+                            expand=1,
+                            controls=[
+                                add_robots_button,
+                                add_models_button,
+                                add_world_button,
+                                add_configure_button,
+                                execute_gazebo
+                            ],
+                            spacing=20),
                         ft.Container(
                             robot_list_view,
-                            bgcolor='blue',
-                            expand=2,
-                            alignment=ft.alignment.center),
-                        ft.Container(expand=1, bgcolor='red')]),
-                add_robots_button,
-                add_models_button,
-                add_world_button,
-                add_configure_button,
-                execute_gazebo
+                            expand=5,
+                            alignment=ft.alignment.center), 
+                            ]),
             ],
             alignment=ft.MainAxisAlignment.CENTER
         ),
