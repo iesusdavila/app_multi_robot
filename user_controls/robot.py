@@ -1,5 +1,6 @@
 from user_controls.modelo import Modelo
 import flet as ft
+
 """
 Robot :
     name: str,
@@ -7,6 +8,7 @@ Robot :
     control_type: str,
     has_camera: str
 """
+
 class Robot():
     def __init__(self, name: str, modelo: Modelo, control_type: str, has_camera: bool):
         super().__init__()
@@ -21,16 +23,56 @@ class Robot():
                 ft.Container(
                     content=ft.Text(
                         value=self.name, 
-                        expand= 1,
-                        text_align=ft.TextAlign.CENTER),
-                    bgcolor="gray",
+                        expand=1,
+                        text_align=ft.TextAlign.CENTER,
+                        style=ft.TextStyle(
+                            size=16,
+                            weight=ft.FontWeight.BOLD,
+                            color="white"
+                        )
+                    ),
+                    bgcolor="black",
                     border=ft.border.all(1),
-                    expand=1),
-                ft.Text(value=self.modelo.nombre, expand= 1.5, text_align=ft.TextAlign.CENTER),
-                ft.Text(value=self.control_type, expand=1, text_align=ft.TextAlign.CENTER)
+                    padding=10,
+                    expand=1,
+                    alignment=ft.alignment.center
+                ),
+                ft.Container(
+                    content=ft.Text(
+                        value=self.modelo.nombre,
+                        expand=1,
+                        text_align=ft.TextAlign.CENTER,
+                        style=ft.TextStyle(
+                            size=14,
+                            weight=ft.FontWeight.NORMAL,
+                            color="black"
+                        )
+                    ),
+                    padding=10,
+                    expand=2,
+                    alignment=ft.alignment.center
+                ),
+                ft.Container(
+                    content=ft.Text(
+                        value=self.control_type,
+                        expand=1,
+                        text_align=ft.TextAlign.CENTER,
+                        style=ft.TextStyle(
+                            size=14,
+                            weight=ft.FontWeight.NORMAL,
+                            color="black"
+                        )
+                    ),
+                    padding=10,
+                    expand=2,
+                    bgcolor="red",
+                    alignment=ft.alignment.center
+                ),
             ],
-            height=30,
-            width=300
+            height=60,
+            width=500,
+            spacing=10,
+            alignment=ft.MainAxisAlignment.CENTER
         )
     
     def yaml_configure(self) -> dict:
@@ -40,3 +82,4 @@ class Robot():
             'sdf_path': self.modelo.rutaSDF,
             'nav_param_path': self.modelo.nav_path
         }
+

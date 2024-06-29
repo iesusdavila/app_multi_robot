@@ -12,13 +12,20 @@ def ModeloView(page: ft.Page):
         padding=20, 
         auto_scroll=False, 
         height=100, 
-        width=300)
+        width=300,)
 
     def construir_tabla(modelo_list: list):
         modelo_table.controls.clear()
         for modelo in modelo_list:
-            fila = ft.Row(controls=[
-                ft.Text(modelo.nombre)])
+            fila = ft.Container(
+                        content=ft.Text(
+                            value=modelo.nombre,
+                            color=ft.colors.ON_SECONDARY,
+                            text_align=ft.TextAlign.CENTER),
+                        bgcolor=ft.colors.random_color(),
+                        height=60,
+                        width=250,
+                        alignment=ft.alignment.center)
             modelo_table.controls.append(fila)
         page.update()
     
@@ -122,12 +129,14 @@ def ModeloView(page: ft.Page):
                     alignment=ft.alignment.center),
                 ft.Row(
                     controls=[
-                        ft.Container(modelo_table),
+                        ft.Container(expand=1),
+                        ft.Container(modelo_table, expand=2),
                         ft.Column(
                             controls=[
                                 button_add_model,
                                 button_go_home
-                            ]
+                            ],
+                            expand=1
                         )
                     ]
                 )

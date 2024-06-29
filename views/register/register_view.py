@@ -37,8 +37,8 @@ def RegisterView(page, myPyrebase):
         e.control.update()
 
     # Componentes del view
-    imagen = ft.Container(content=ft.Image(src=f"/images/Fondo_inicio.jpg", width=500, height=500), expand= 1)
-    encabezado = ft.Text("Registrate", style=ft.TextStyle(weight=ft.FontWeight.W_500))
+    imagen = ft.Container(content=ft.Image(src=f"/images/register.png", width=500, height=500), expand= 1)
+    encabezado = ft.Text("Registrate", style=ft.TextStyle(weight=ft.FontWeight.W_600, size=24), text_align=ft.TextAlign.CENTER, expand=1)
     name = ft.TextField(label="Nombre", autofocus=True, width=300)
     email = ft.TextField(label="Email", autofocus=True, width=300)
     register_button = ft.ElevatedButton(text="Registrate", scale=1.2, on_click=handle_register)

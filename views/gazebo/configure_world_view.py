@@ -1,7 +1,8 @@
 import flet as ft
-from funciones import obtain_world_list, obtain_robot_list
+from funciones import obtain_world_list, obtain_robot_list, configure_package
 from user_controls.world import World
 from user_controls.robot import Robot
+import yaml
 
 def ConfigureWorld(page: ft.Page):
     title = "Configurar mundos"
@@ -46,10 +47,10 @@ def ConfigureWorld(page: ft.Page):
     def save_robot(e):
         robot = find_robot_by_name(robot_combobox.value, robot_list)
         info = robot.yaml_configure()
-        info['x_pose'] = x_pose.value
-        info['y_pose'] = y_pose.value
-        info['z_pose'] = z_pose.value
-        info['yaw'] = yaw.value
+        info['x_pose'] = float(x_pose.value)
+        info['y_pose'] = float(y_pose.value)
+        info['z_pose'] = float(z_pose.value)
+        info['yaw'] = float(yaw.value)
         info['rviz_view'] = str(rviz_view.value).lower()
         robot_configure_list.append(info)
         build_table_robot(robot_configure_list)
@@ -62,9 +63,23 @@ def ConfigureWorld(page: ft.Page):
         rviz_view.value = False
         page.update()
 
+    def write_gazebo_world(world: World, robots: list):
+        path = configure_package() + '/' + save_path.value + '.yaml'
+        print(path)
+        with open(path, 'w') as file:
+            datos = {'world': world.to_yaml(),
+                     'robots': robots}
+            yaml.dump(datos, file)
+
     def save_file(e):
-        print(robot_configure_list)
-        page.dialog = False
+        nonlocal robot_configure_list
+        world = find_world_by_name(world_combobox.value, world_list)
+        write_gazebo_world(world, robot_configure_list)
+        robot_configure_list = []
+        build_table_robot(robot_configure_list)
+        update_num_robots_input(0)
+        world_combobox.value = None
+        page.dialog.open = False
         page.update()
 
     def find_robot_by_name(name: str, robots: list[Robot]) -> Robot:
@@ -72,6 +87,11 @@ def ConfigureWorld(page: ft.Page):
             if robot.name == name:
                 return robot
     
+    def find_world_by_name(name: str, worlds: list[World]) -> World:
+        for world in worlds:
+            if world.name == name:
+                return world
+
     def save_configuration(e):
         page.dialog = ft.AlertDialog(
             title=ft.Text("Guardar configuracion"),
@@ -150,9 +170,6 @@ def ConfigureWorld(page: ft.Page):
         value=False)
     save_path = ft.TextField(
         label="Nombre archivo configuracion")
-    save_configuration_button = ft.ElevatedButton(
-        text="Finish",
-        on_click=save_configuration)
 
     def add_robot(e):
         if len(robot_configure_list) < int(num_robots_input.value):

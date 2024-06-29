@@ -1,10 +1,20 @@
 import yaml
 import os
 import subprocess
+import threading
 from ament_index_python import get_package_share_path
 from user_controls.modelo import Modelo
 from user_controls.robot import Robot
 from user_controls.world import World
+
+def configure_package():
+    try:
+        package_share_path = get_package_share_path('multi_robot_bringup')
+        config_path = package_share_path / 'config'
+        return str(config_path)
+    except ValueError as e:
+        print(f"Error al obtener la ruta del paquete: {e}")
+        return None
 
 def obtain_models_path() -> str:
     model_list_path = ""
@@ -184,11 +194,12 @@ def list_files_in_directory(directory_path: str) -> list:
         print(f"Error al listar archivos en el directorio: {e}")
         return []
 
-def launch_simulation(config_path: str):
+def launch_simulation(config_path: str, stop_event: threading.Event):
     """
     Launch a ROS2 simulation with the given configuration file.
 
     :param config_path: Path to the configuration file.
+    :param stop_event: Event to signal when to stop the simulation.
     """
     try:
         # Construir el comando a ejecutar
@@ -198,17 +209,28 @@ def launch_simulation(config_path: str):
         ]
 
         # Ejecutar el comando
-        result = subprocess.run(command, capture_output=True, text=True)
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-        # Verificar el resultado
-        if result.returncode == 0:
-            print("Simulación lanzada exitosamente.")
-            print("Salida:")
-            print(result.stdout)
-        else:
-            print("Error al lanzar la simulación.")
-            print("Error:")
-            print(result.stderr)
+        # Esperar hasta que el evento de stop se establezca
+        while not stop_event.is_set():
+            if process.poll() is not None:  # Verificar si el proceso ha terminado
+                break
+        
+
+        command_kill_gzclient = [
+            "pkill", "gzclient"
+        ]
+
+        command_kill_gzserver = [
+            "pkill", "gzserver"
+        ]
+
+        process_kill_gzclient = subprocess.Popen(command_kill_gzclient, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process_kill_gzserver = subprocess.Popen(command_kill_gzserver, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        # Terminar el proceso si aún está corriendo
+        if process.poll() is None:
+            process.terminate()
+            process.wait()
 
     except Exception as e:
         print(f"Error al intentar lanzar la simulación: {e}")
