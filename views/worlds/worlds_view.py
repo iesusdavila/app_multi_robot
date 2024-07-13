@@ -2,10 +2,11 @@ import flet as ft
 from funciones import obtain_world_list, add_world
 from user_controls.world import World
 from user_controls.file_selector import FileSelector
+import os
 
 def WorldsView(page: ft.Page):
     title = "Worlds"
-    world_list = obtain_world_list("/home/robot/app_multirobot/app_multi_robot/worlds_register.yaml")
+    world_list = obtain_world_list()
 
     world_label = ft.Text(
         value='Mundos disponibles', 
@@ -44,7 +45,7 @@ def WorldsView(page: ft.Page):
             map_path.file_path_text
         )
         add_world(new_world)
-        world_list = obtain_world_list("/home/robot/app_multirobot/app_multi_robot/worlds_register.yaml")
+        world_list = obtain_world_list()
         construir_tabla(world_list)
         name_input.value = ''
         world_path_picker.reset()

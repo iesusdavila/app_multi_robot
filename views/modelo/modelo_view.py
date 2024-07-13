@@ -2,10 +2,11 @@ import flet as ft
 from funciones import obtain_model_list, add_model
 from user_controls.modelo import Modelo
 from user_controls.file_selector import FileSelector
+import os
 
 def ModeloView(page: ft.Page):
     title = 'Modelo'
-    modelo_list = obtain_model_list('/home/robot/app_multirobot/app_multi_robot/models_register.yaml')
+    modelo_list = obtain_model_list()
     modelo_table = ft.ListView(
         expand=1, 
         spacing=10, 
@@ -59,7 +60,7 @@ def ModeloView(page: ft.Page):
             sdf_picker.file_path_text,
             nav_picker.file_path_text)
         add_model(nuevo_modelo)
-        modelo_list = obtain_model_list('/home/robot/app_multirobot/app_multi_robot/models_register.yaml')
+        modelo_list = obtain_model_list()
         construir_tabla(modelo_list)
         nombre_input.value = ''
         urdf_picker.file_path_label.value = "Seleccionar archivos"

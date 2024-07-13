@@ -1,7 +1,7 @@
 import flet as ft
+import os
 
 # views
-from views.dashboard.dashboard_view import DashboardView
 from views.login.login_view import LoginView
 from views.register.register_view import RegisterView
 from views.home.home_view import HomeView
@@ -10,7 +10,11 @@ from views.worlds.worlds_view import WorldsView
 from views.gazebo.configure_world_view import ConfigureWorld
 from views.gazebo.execute_gazebo import ExecuteGazebo
 
-import flet as ft
+home_dir = os.path.expanduser('~')
+robotmap_data_dir = os.path.join(home_dir, "robotmap-data")
+
+if not os.path.exists(robotmap_data_dir):
+    os.makedirs(robotmap_data_dir)
 
 class Router:
 

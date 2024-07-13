@@ -5,9 +5,9 @@ from user_controls.robot import Robot
 def HomeView(page: ft.Page):
     title = "Home"
 
-    modelos = obtain_model_list("/home/robot/app_multirobot/app_multi_robot/models_register.yaml")
-    all_robots = obtain_robot_list("/home/robot/app_multirobot/app_multi_robot/robots_register.yaml")
-    control_types = ["Diferencial", "Omnidireccional", "Ackermann", "Aerial"]
+    modelos = obtain_model_list()
+    all_robots = obtain_robot_list()
+    control_types = ["Diferencial", "Omnidireccional", "Aerial"]
 
     def show_add_robot(e):
         page.dialog = ft.AlertDialog(
@@ -119,7 +119,7 @@ def HomeView(page: ft.Page):
             combobox_control_type.value,
             has_camera.value)
         add_robot(new_robot)
-        all_robots = obtain_robot_list("/home/robot/app_multirobot/app_multi_robot/robots_register.yaml")
+        all_robots = obtain_robot_list()
         build_robot_list(all_robots)
         page.dialog.open = False
         combobox_control_type.value = ""

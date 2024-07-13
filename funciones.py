@@ -7,6 +7,11 @@ from user_controls.modelo import Modelo
 from user_controls.robot import Robot
 from user_controls.world import World
 
+home_dir = os.path.expanduser('~')
+robots_path = os.path.join(home_dir,'robotmap-data','robots_register.yaml')
+models_path = os.path.join(home_dir,'robotmap-data','models_register.yaml')
+worlds_path = os.path.join(home_dir,'robotmap-data','worlds_register.yaml')
+
 def configure_package():
     try:
         package_share_path = get_package_share_path('multi_robot_bringup')
@@ -16,18 +21,9 @@ def configure_package():
         print(f"Error al obtener la ruta del paquete: {e}")
         return None
 
-def obtain_models_path() -> str:
-    model_list_path = ""
-    try:
-        model_list_path = os.path.join(get_package_share_path('multi_robot_gazebo'), 'config', 'models_register.yaml')
-        return model_list_path
-    except:
-        print("Agregar correctamente el ws al sistema")
-        return model_list_path
-
-def obtain_model_list(path: str) -> list:
+def obtain_model_list() -> list:
     model_list = list()
-    # path = obtain_models_path()
+    path = models_path
     # Verificar si el archivo existe
     if not os.path.exists(path):
         # Crear el archivo vacío
@@ -73,18 +69,9 @@ def add_model(modelo: Modelo):
             datos = {'models': modelos_old}
             yaml.dump(datos, file)
 
-def obtain_robots_path() -> str:
-    robot_list_path = str()
-    try:
-        robot_list_path = os.path.join(get_package_share_path('multi_robot_gazebo'), 'config', 'robots_register.yaml')
-        return robot_list_path
-    except:
-        print("Agregar correctamente el ws al sistema")
-        return robot_list_path
-
-def obtain_robot_list(path: str) -> list:
+def obtain_robot_list() -> list:
     robot_list = list()
-    # path = "/home/robot/app_multirobot/app_multi_robot/robots_register.yaml"
+    path = robots_path
     # Verificar si el archivo existe
     if not os.path.exists(path):
         # Crear el archivo vacío
@@ -134,11 +121,9 @@ def add_robot(robot: Robot):
             datos = {'robots': robots_old}
             yaml.dump(datos, file)
 
-def obtain_worlds_path() -> str:
-    pass
-
-def obtain_world_list(path: str) -> list:
+def obtain_world_list() -> list:
     world_list = list()
+    path = worlds_path
     if not os.path.exists(path):
         with open(path, 'w') as file:
             data = {'worlds': world_list}

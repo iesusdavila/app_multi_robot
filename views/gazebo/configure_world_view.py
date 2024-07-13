@@ -1,14 +1,15 @@
 import flet as ft
-from funciones import obtain_world_list, obtain_robot_list, configure_package
+from funciones import obtain_world_list, obtain_robot_list, configure_package, obtain_robots_path
 from user_controls.world import World
 from user_controls.robot import Robot
 import yaml
+import os
 
 def ConfigureWorld(page: ft.Page):
     title = "Configurar mundos"
 
-    world_list: list[World] = obtain_world_list("/home/robot/app_multirobot/app_multi_robot/worlds_register.yaml")
-    robot_list: list[Robot] = obtain_robot_list("/home/robot/app_multirobot/app_multi_robot/robots_register.yaml")
+    world_list: list[World] = obtain_world_list()
+    robot_list: list[Robot] = obtain_robot_list()
     robot_configure_list: list = list()
     num_robots = 0
     widget_robots = ft.Column(
