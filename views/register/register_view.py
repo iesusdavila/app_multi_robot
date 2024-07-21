@@ -1,6 +1,7 @@
 import flet as ft
+from db.flet_pyrebase import PyrebaseWrapper
 
-def RegisterView(page, myPyrebase):
+def RegisterView(page: ft.Page, myPyrebase: PyrebaseWrapper):
     title = "Register"
 
     def on_load():

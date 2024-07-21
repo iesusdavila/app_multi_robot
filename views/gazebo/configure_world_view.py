@@ -1,5 +1,5 @@
 import flet as ft
-from funciones import obtain_world_list, obtain_robot_list, configure_package, obtain_robots_path
+from funciones import obtain_world_list, obtain_robot_list, gazebo_dir
 from user_controls.world import World
 from user_controls.robot import Robot
 import yaml
@@ -8,13 +8,12 @@ import os
 def ConfigureWorld(page: ft.Page):
     title = "Configurar mundos"
 
-    world_list: list[World] = obtain_world_list()
-    robot_list: list[Robot] = obtain_robot_list()
+    world_list: list[World] = list()
+    robot_list: list[Robot] = list()
     robot_configure_list: list = list()
     num_robots = 0
     widget_robots = ft.Column(
-        controls=[ft.Text(value="No hay robots agregados")]
-    )
+        controls=[ft.Text(value="No hay robots agregados")])
 
     def update_num_robots_input(value):
         nonlocal num_robots
@@ -65,7 +64,7 @@ def ConfigureWorld(page: ft.Page):
         page.update()
 
     def write_gazebo_world(world: World, robots: list):
-        path = configure_package() + '/' + save_path.value + '.yaml'
+        path = gazebo_dir + '/' + save_path.value + '.yaml'
         print(path)
         with open(path, 'w') as file:
             datos = {'world': world.to_yaml(),
@@ -113,7 +112,6 @@ def ConfigureWorld(page: ft.Page):
         page.update()
 
     def on_num_robots_input_change():
-        print("El valor de num_robots_input ha cambiado:", num_robots_input.value)
         check_add_robot_button()
     
     def check_add_robot_button():
@@ -206,14 +204,14 @@ def ConfigureWorld(page: ft.Page):
         icon=ft.icons.ADD_CIRCLE,
         on_click=add_robot)
     
-    def return_home(e):
-        page.go("/")
+    def go_gz_list(e):
+        page.go("/environments")
         page.update()
 
-    return_home_button = ft.ElevatedButton(
-        text="Regresar a home",
-        icon=ft.icons.HOME,
-        on_click=return_home
+    return_gz_list = ft.ElevatedButton(
+        text="Lista entornos",
+        icon=ft.icons.BACKUP,
+        on_click=go_gz_list
     )
 
     configure_view = ft.SafeArea(
@@ -248,7 +246,7 @@ def ConfigureWorld(page: ft.Page):
                     content=save_button,
                     alignment=ft.alignment.center),
                 ft.Container(
-                    content=return_home_button,
+                    content=return_gz_list,
                     alignment=ft.alignment.center)
             ],
             spacing=20
@@ -256,12 +254,16 @@ def ConfigureWorld(page: ft.Page):
     )
 
     def on_page_load():
-        nonlocal robot_configure_list, num_robots
+        nonlocal robot_configure_list, num_robots, world_list, robot_list
         robot_configure_list = []
         num_robots = 0
         widget_robots.controls.clear()
         world_combobox.value = None
         robot_combobox.value = None
+        world_list = obtain_world_list()
+        world_combobox.options = [ft.dropdown.Option(world.name) for world in world_list]
+        robot_list = obtain_robot_list()
+        robot_combobox.options = [ft.dropdown.Option(robot.name) for robot in robot_list]
         page.update()
 
 

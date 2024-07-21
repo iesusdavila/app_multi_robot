@@ -8,13 +8,24 @@ from user_controls.robot import Robot
 from user_controls.world import World
 
 home_dir = os.path.expanduser('~')
-robots_path = os.path.join(home_dir,'robotmap-data','robots_register.yaml')
-models_path = os.path.join(home_dir,'robotmap-data','models_register.yaml')
-worlds_path = os.path.join(home_dir,'robotmap-data','worlds_register.yaml')
+robots_path = os.path.join(home_dir,'robotmap-data', "data",'robots_register.yaml')
+models_path = os.path.join(home_dir,'robotmap-data', "data",'models_register.yaml')
+worlds_path = os.path.join(home_dir,'robotmap-data', "data",'worlds_register.yaml')
+gazebo_dir = os.path.join(home_dir,'robotmap-data','gazebo')
+rutina_dir = os.path.join(home_dir,'robotmap-data','rutinas')
 
 def configure_package():
     try:
         package_share_path = get_package_share_path('multi_robot_bringup')
+        config_path = package_share_path / 'config'
+        return str(config_path)
+    except ValueError as e:
+        print(f"Error al obtener la ruta del paquete: {e}")
+        return None
+
+def configure_rutina_path():
+    try:
+        package_share_path = get_package_share_path('multi_robot_master_slave')
         config_path = package_share_path / 'config'
         return str(config_path)
     except ValueError as e:
@@ -56,7 +67,7 @@ def model_to_yaml(modelo: Modelo) -> dict:
     }
 
 def add_model(modelo: Modelo):
-    path = "/home/robot/app_multirobot/app_multi_robot/models_register.yaml"
+    path = models_path
     modelos_old = list()
     with open(path, 'r') as file:
         try:
@@ -108,7 +119,7 @@ def robot_to_yaml(robot: Robot) -> dict:
     }
 
 def add_robot(robot: Robot):
-    path = "/home/robot/app_multirobot/app_multi_robot/robots_register.yaml"
+    path = robots_path
     robots_old = list()
     with open(path, 'r') as file:
         try:
@@ -147,12 +158,18 @@ def obtain_world_list() -> list:
             return []
 
 def add_world(world: World):
-    path = "/home/robot/app_multirobot/app_multi_robot/worlds_register.yaml"
-    worlds_old = obtain_world_list(path)
+    path = worlds_path
+    worlds_old = list()
+    with open(path, 'r') as file:
+        try:
+            data = yaml.safe_load(file)
+            worlds_old = data['worlds']
+        except yaml.YAMLError as e:
+            print(f"Error en la actualizacion: {e}")
     worlds_old.append(world.to_yaml())
     with open(path, 'w') as file:
-        data = {'worlds': worlds_old}
-        yaml.dump(data, file)
+            datos = {'worlds': worlds_old}
+            yaml.dump(datos, file)
 
 def list_files_in_directory(directory_path: str) -> list:
     """
@@ -196,6 +213,8 @@ def launch_simulation(config_path: str, stop_event: threading.Event):
         # Ejecutar el comando
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
+        print("Se ejecuta el gazebo")
+
         # Esperar hasta que el evento de stop se establezca
         while not stop_event.is_set():
             if process.poll() is not None:  # Verificar si el proceso ha terminado
@@ -212,6 +231,8 @@ def launch_simulation(config_path: str, stop_event: threading.Event):
 
         process_kill_gzclient = subprocess.Popen(command_kill_gzclient, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         process_kill_gzserver = subprocess.Popen(command_kill_gzserver, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        print("Se killea todo")
         # Terminar el proceso si aún está corriendo
         if process.poll() is None:
             process.terminate()
@@ -219,3 +240,44 @@ def launch_simulation(config_path: str, stop_event: threading.Event):
 
     except Exception as e:
         print(f"Error al intentar lanzar la simulación: {e}")
+
+def launch_rutina(config_path: str, stop_event: threading.Event):
+    """
+    Launch a routine with the given configuration file.
+
+    :param config_path: Path to the configuration file.
+    :param stop_event: Event to signal when to stop the simulation.
+    """
+    try:
+        # Construir el comando a ejecutar
+        command = [
+            "ros2", "run", "multi_robot_master_slave", "nav_master_slave.py",
+            f"{config_path}"
+        ]
+
+        # Ejecutar el comando
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        # Esperar hasta que el evento de stop se establezca
+        while not stop_event.is_set():
+            if process.poll() is not None:  # Verificar si el proceso ha terminado
+                break
+        
+        # Terminar el proceso si aún está corriendo
+        if process.poll() is None:
+            process.terminate()
+            process.wait()
+
+    except Exception as e:
+        print(f"Error al intentar lanzar la simulación: {e}")
+
+def obtain_robots_to_gz(name: str):
+    path = gazebo_dir + "/" + name + ".yaml"
+    robots = list()
+    with open(path, 'r') as file:
+        try:
+            data = yaml.safe_load(file)
+            robots = data['robots']
+            return robots
+        except yaml.YAMLError as e:
+            return []

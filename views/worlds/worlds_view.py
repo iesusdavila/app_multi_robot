@@ -55,10 +55,8 @@ def WorldsView(page: ft.Page):
 
     def close_dialog(e):
         name_input.value = ""
-        world_path_picker.file_path_label = "Seleccionar archivo"
-        world_path_picker.file_path_text = ""
-        map_path.file_path_label = "Seleccionar archivo"
-        map_path.file_path_text = ""
+        world_path_picker.reset()
+        map_path.reset()
         page.dialog.open = False
         page.update()
 

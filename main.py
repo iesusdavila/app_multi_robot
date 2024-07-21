@@ -14,4 +14,3 @@ def main(page: Page):
 
 
 app(main, assets_dir="assets")
-

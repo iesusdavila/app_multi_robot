@@ -1,1 +1,358 @@
 import flet as ft
+import yaml
+from user_controls.robot import Robot
+from user_controls.world import World
+from funciones import obtain_robot_list, list_files_in_directory, obtain_robots_to_gz,rutina_dir, gazebo_dir
+
+def ConfigureRutina(page: ft.Page):
+    title = "Configurar rutina"
+
+    num_poses = 0
+    entornos_files = []
+    robot_list = []
+    current_robot = dict()
+    robot_info = dict()
+
+    rutina_label = ft.Text(
+        value="Configurar rutina",
+        style=ft.TextStyle(weight=ft.FontWeight.BOLD),
+        size=40)
+    
+    def actualize_robots(e):
+        nonlocal robot_list
+        robot_list.clear()
+        robot_list = obtain_robots_to_gz(str(dropdown_entorno.value))
+        dropdown_robot.options = [ft.dropdown.Option(robot["name"]) for robot in robot_list]
+        dropdown_master.options = [ft.dropdown.Option(robot["name"]) for robot in robot_list]
+        for robot in robot_list:
+            if not robot["name"] in robot_info.keys():
+                robot_info[robot["name"]] = dict()
+                robot_info[robot["name"]]['poses'] = list()
+        dropdown_robot.update()
+        dropdown_master.update()
+
+    def actualize_robot_current(e):
+        nonlocal current_robot
+        check_camera.disabled = False
+        for robot in robot_list:
+            if robot["name"] == dropdown_robot.value:
+                current_robot = robot
+        if not current_robot["has_camera"]:
+            check_camera.disabled = True
+            check_camera.value = False
+        check_camera.update()
+    
+    dropdown_entorno = ft.Dropdown(
+        label="Selecciona el entorno",
+        hint_text='No seleccionado',
+        width=300,
+        options=[ft.dropdown.Option(name) for name in entornos_files],
+        on_change=actualize_robots)
+    
+    dropdown_robot = ft.Dropdown(
+        label="Elige el robot",
+        hint_text='No seleccionado',
+        width=300,
+        options=[ft.dropdown.Option(robot.name) for robot in robot_list],
+        on_change=actualize_robot_current)
+    
+    dropdown_master = ft.Dropdown(
+        label="Nombre master",
+        hint_text="No seleccionado",
+        width=300,
+        options=[ft.dropdown.Option(robot.name) for robot in robot_list],
+        disabled=False)
+    
+    def change_master(e):
+        if check_master.value:
+            dropdown_master.disabled = True
+            dropdown_master.value = None
+            check_hierarchy.disabled = False
+        else:
+            check_hierarchy.value = True
+            dropdown_master.disabled = False
+            check_hierarchy.disabled = True
+        dropdown_master.update()
+        check_hierarchy.update()
+
+    check_master = ft.Checkbox(
+        label="Es master?",
+        value=False,
+        on_change=change_master)
+    
+    def change_max_time(e):
+        duration_time.disabled = True
+        duration_time.value = 0
+        if check_max_time.value:
+            duration_time.disabled = False
+        duration_time.update()
+
+    def update_poses(value: int):
+        nonlocal num_poses
+        num_poses = value
+        pose_goals_field.value = str(value)
+        pose_goals_field.update()
+
+    def add_num_poses(e):
+        value = int(pose_goals_field.value) + 1
+        update_poses(value)
+
+    def remove_num_poses(e):
+        value = int(pose_goals_field.value) - 1
+        if not value < 0:
+            update_poses(value)
+
+    check_camera = ft.Checkbox(
+        label="Usa camara",
+        value=False)
+    
+    check_max_time = ft.Checkbox(
+        label="Usa tiempo max",
+        value=False,
+        on_change=change_max_time)
+    
+    check_hierarchy = ft.Checkbox(
+        label="Hereda tiempo",
+        value=True,
+        disabled=True)
+    
+    duration_time = ft.TextField(
+        label="Duracion (min)",
+        value=0,
+        width=100,
+        disabled=True)
+    
+    pose_goals_field = ft.TextField(
+        label="Poses goals",
+        width=150,
+        height=60,
+        value=0,
+        disabled=True)
+    
+    add_num_pose_button = ft.IconButton(
+        icon=ft.icons.ADD_CIRCLE,
+        on_click=add_num_poses)
+    
+    remove_num_pose_button = ft.IconButton(
+        icon=ft.icons.REMOVE_CIRCLE,
+        on_click=remove_num_poses)
+    
+    pose_table = ft.Column(
+        width=500,
+        height=200,
+        alignment=ft.MainAxisAlignment.CENTER)
+    
+    x_pose = ft.TextField(
+        label="Pose X",
+        width=80)
+    
+    y_pose = ft.TextField(
+        label="Pose Y",
+        width=80)
+    
+    z_pose = ft.TextField(
+        label="Pose Z",
+        width=80)
+    
+    yaw = ft.TextField(
+        label="Yaw",
+        width=80)
+
+    def configure_pose(e):
+        page.dialog = ft.AlertDialog(
+            modal=True,
+            elevation=20,
+            title=ft.Text("Agregar pose"),
+            title_padding=15,
+            content=ft.Container(
+                width=400,
+                height=200,
+                content=ft.Column(
+                    controls=[
+                        ft.Row(
+                            controls=[
+                                x_pose,
+                                y_pose,
+                                z_pose]),
+                        yaw])),
+            actions=[
+                ft.TextButton("Guardar", on_click=save_pose),
+                ft.TextButton("Cancelar", on_click=close_dialog)
+            ],
+            actions_alignment=ft.MainAxisAlignment.END)
+        page.dialog.open = True
+        page.update()
+
+    def build_table_pose():
+        nonlocal current_robot, robot_info
+        pose_table.controls.clear()
+        poses = robot_info[current_robot["name"]]['poses']
+        for pose in poses:
+            id_pose = str(pose["id"])
+            pose_table.controls.append(
+                ft.Text(
+                    value=f"Pose {id_pose}"))
+        pose_table.update()
+
+    def save_pose(e):
+        nonlocal robot_info, current_robot
+        id_pose = len(robot_info[current_robot["name"]]['poses']) + 1
+        pose = {
+            "id": id_pose,
+            "x": float(x_pose.value),
+            "y": float(y_pose.value),
+            "z": float(z_pose.value),
+            "yaw": float(yaw.value)}
+        robot_info[current_robot["name"]]['poses'].append(pose)
+        build_table_pose()
+        page.dialog.open = False
+        page.update()
+
+    def close_dialog(e):
+        x_pose.value = None
+        y_pose.value = None
+        z_pose.value = None
+        yaw.value = None
+        page.dialog.open = False
+        page.update()
+    
+    add_pose = ft.IconButton(
+        icon=ft.icons.ADD_CIRCLE,
+        on_click=configure_pose)
+    
+    def save_configuration_robot(e):
+        nonlocal current_robot, robot_info, num_poses
+        robot_info[current_robot["name"]]["is_master"] = check_master.value
+        robot_info[current_robot["name"]]["has_camera"] = current_robot["has_camera"]
+        robot_info[current_robot["name"]]["same_time_task"] = check_hierarchy.value
+        if not check_master.value:
+            robot_info[current_robot["name"]]["name_master"] = dropdown_master.value
+            robot_info[current_robot["name"]]["has_max_time"] = check_max_time.value
+            robot_info[current_robot["name"]]["duration_max_time"] = float(duration_time.value)
+            robot_info[current_robot["name"]]["use_camera"] = check_camera.value
+        check_camera.value = False
+        check_master.value = False
+        dropdown_master.value = None
+        check_max_time.value = False
+        duration_time.value = 0
+        pose_goals_field.value = 0
+        num_poses = 0
+        page.update()
+
+    file_name_rutina = ft.TextField(
+        label="Nombre del archivo")
+
+    def write_rutina():
+        nonlocal robot_info
+        path = rutina_dir + '/' + file_name_rutina.value + '.yaml'
+        data = []
+        for robot_name in robot_info.keys():
+            robot_data = dict()
+            robot_data['name'] = robot_name
+            robot_data['is_master'] = robot_info[robot_name]['is_master']
+            robot_data['has_camera'] = robot_info[robot_name]['has_camera']
+            robot_data['same_time_task'] = robot_info[robot_name]['same_time_task']
+            if not robot_info[robot_name]['is_master']:
+                robot_data['name_master'] = robot_info[robot_name]['name_master']
+                robot_data['has_max_time'] = robot_info[robot_name]['has_max_time']
+                robot_data['duration_max_time'] = robot_info[robot_name]['duration_max_time']
+                robot_data['use_camera'] = robot_info[robot_name]['use_camera']
+                for pose in robot_info[robot_name]['poses']:
+                    name = "pose_goal_" + str(pose['id'])
+                    robot_data[name] = dict()
+                    robot_data[name]['x'] = pose['x']
+                    robot_data[name]['y'] = pose['y']
+                    robot_data[name]['z'] = pose['z']
+                    robot_data[name]['yaw'] = pose['yaw']
+            data.append(robot_data)
+        with open(path, 'w') as file:
+            datos = {'robots': data}
+            yaml.dump(datos, file)
+        
+    def finish_configuration():
+        page.dialog = ft.AlertDialog(
+            modal=True,
+            elevation=20,
+            title=ft.Text("Guardar rutina"),
+            title_padding=15,
+            content=ft.Container(
+                width=400,
+                height=200,
+                content=file_name_rutina),
+            actions=[
+                ft.TextButton("Guardar", on_click=save_pose),
+                ft.TextButton("Cancelar", on_click=close_dialog)
+            ],
+            actions_alignment=ft.MainAxisAlignment.END)
+        write_rutina()
+        page.dialog.open = True
+        page.update()
+    
+    save_button = ft.TextButton(
+        text="Guardar",
+        on_click=save_configuration_robot)
+    
+    finish_button = ft.TextButton(
+        text="Finalizar",
+        on_click=finish_configuration)
+    
+    def on_page_load():
+        nonlocal entornos_files
+        entornos_files = list_files_in_directory(gazebo_dir)
+        dropdown_entorno.options = [ft.dropdown.Option(name) for name in entornos_files]
+        page.update()
+    
+    rutina_view = ft.SafeArea(
+        expand=True,
+        content=ft.Column(
+            spacing=20,
+            controls=[
+                ft.Container(
+                    content=rutina_label,
+                    alignment=ft.alignment.center),
+                dropdown_entorno,
+                ft.Row(
+                    spacing=30,
+                    controls=[
+                        dropdown_robot,
+                        ft.Container(
+                            content=check_camera,
+                            alignment=ft.alignment.center)
+                    ]),
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    spacing=30,
+                    controls=[
+                        check_master,
+                        dropdown_master,
+                        check_hierarchy]),
+                ft.Row(
+                    controls=[
+                        check_max_time,
+                        duration_time],
+                    alignment=ft.MainAxisAlignment.CENTER),
+                ft.Row(
+                    controls=[
+                        pose_goals_field,
+                        add_num_pose_button,
+                        remove_num_pose_button],
+                    alignment=ft.MainAxisAlignment.CENTER),
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        pose_table,
+                        ft.Container(
+                            alignment=ft.alignment.center,
+                            content=add_pose)]),
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.END,
+                    controls=[
+                        save_button,
+                        finish_button])
+            ]))
+
+    return {
+        "view": rutina_view,
+        "title": title,
+        "load": on_page_load
+    }

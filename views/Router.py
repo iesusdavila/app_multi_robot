@@ -9,12 +9,27 @@ from views.modelo.modelo_view import ModeloView
 from views.worlds.worlds_view import WorldsView
 from views.gazebo.configure_world_view import ConfigureWorld
 from views.gazebo.execute_gazebo import ExecuteGazebo
+from views.rutina.configure_rutina import ConfigureRutina
+from views.rutina.execute_rutina import ExecuteRutina
+from views.dashboard.monitor_view import MonitorView
 
 home_dir = os.path.expanduser('~')
 robotmap_data_dir = os.path.join(home_dir, "robotmap-data")
+data_dir = os.path.join(robotmap_data_dir, "data")
+gazebo_dir = os.path.join(robotmap_data_dir, "gazebo")
+rutina_dir = os.path.join(robotmap_data_dir, "rutinas")
 
 if not os.path.exists(robotmap_data_dir):
     os.makedirs(robotmap_data_dir)
+
+if not os.path.exists(data_dir):
+    os.makedirs(data_dir)
+
+if not os.path.exists(gazebo_dir):
+    os.makedirs(gazebo_dir)
+
+if not os.path.exists(rutina_dir):
+    os.makedirs(rutina_dir)
 
 class Router:
 
@@ -22,12 +37,15 @@ class Router:
         self.page = page
         self.routes = {
             "/": LoginView(page, myPyrebase),
-            "/home": HomeView(page),
+            "/home": HomeView(page, myPyrebase),
             "/add_model": ModeloView(page),
             "/register": RegisterView(page, myPyrebase),
             "/worlds": WorldsView(page),
-            "/configure": ConfigureWorld(page),
-            "/execute": ExecuteGazebo(page)
+            "/environments": ExecuteGazebo(page),
+            "/config_gz": ConfigureWorld(page),
+            "/rutina": ExecuteRutina(page),
+            "/config_rutina": ConfigureRutina(page),
+            "/monitor": MonitorView(page)
         }
         self.body = ft.Container(content=self.routes['/']["view"])
 

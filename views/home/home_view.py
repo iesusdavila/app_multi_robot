@@ -1,8 +1,9 @@
 import flet as ft
 from funciones import *
 from user_controls.robot import Robot
+from db.flet_pyrebase import PyrebaseWrapper
 
-def HomeView(page: ft.Page):
+def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
     title = "Home"
 
     modelos = obtain_model_list()
@@ -37,7 +38,7 @@ def HomeView(page: ft.Page):
         page.go("/add_model")
         page.update()
 
-    robot_list_view = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=False, height=300, width=700)
+    robot_list_view = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=False, height=200, width=700)
 
     def build_robot_list(robot_list: list[Robot]):
         robot_list_view.controls.clear()
@@ -50,13 +51,21 @@ def HomeView(page: ft.Page):
         page.go("/worlds")
         page.update()
 
-    def go_configure(e):
-        page.go("/configure")
+    def go_environments(e):
+        page.go("/environments")
         page.update()
 
-    def go_execute(e):
-        page.go('/execute')
+    def go_configure_rutina(e):
+        page.go('/rutina')
         page.update()
+    
+    def go_monitoreo(e):
+        page.go('/monitor')
+        page.update()
+
+    def sign_out(e):
+        myPyrebase.sign_out()
+        page.go('/')
 
     add_robots_button = ft.ElevatedButton(
         text="Agregar robots", 
@@ -79,17 +88,25 @@ def HomeView(page: ft.Page):
         style=ft.TextStyle(weight=ft.FontWeight.BOLD), 
         text_align=ft.TextAlign.CENTER)
     add_configure_button = ft.ElevatedButton(
-        text="Configurar gazebo",
+        text="Entornos",
         icon=ft.icons.AC_UNIT,
-        on_click=go_configure,
-        width=200
-    )
-    execute_gazebo = ft.ElevatedButton(
-        text='Ejecutar mundos',
-        icon=ft.icons.WORK,
-        on_click=go_execute,
-        width=200
-    )
+        on_click=go_environments,
+        width=200)
+    configure_rutina = ft.ElevatedButton(
+        text='Rutinas',
+        icon=ft.icons.TASK,
+        on_click=go_configure_rutina,
+        width=200)
+    monitoreo_rutina = ft.ElevatedButton(
+        text='Monitorear rutinas',
+        icon=ft.icons.DATA_EXPLORATION,
+        on_click=go_monitoreo,
+        width=200)
+    cerrar_sesion = ft.ElevatedButton(
+        text='Cerrar sesion',
+        icon=ft.icons.LOGOUT,
+        on_click=sign_out,
+        width=200)
 
     build_robot_list(all_robots)
 
@@ -139,30 +156,33 @@ def HomeView(page: ft.Page):
     myPage = ft.SafeArea(
         expand=True,
         content=ft.Column(
-            expand=True,
             spacing=40,
             controls=[
                 ft.Container(
                     active_robot_text, 
                     alignment=ft.alignment.center),
-                ft.Row(
+                ft.Container(
+                    robot_list_view,
+                    alignment=ft.alignment.center),
+                ft.Column(
                     controls=[
-                        ft.Column(
-                            expand=1,
+                        ft.Row(
+                            alignment=ft.MainAxisAlignment.CENTER,
                             controls=[
-                                add_robots_button,
                                 add_models_button,
-                                add_world_button,
+                                add_robots_button,
+                                add_world_button]),
+                        ft.Row(
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            controls=[
                                 add_configure_button,
-                                execute_gazebo
-                            ],
-                            spacing=20),
-                        ft.Container(
-                            robot_list_view,
-                            expand=5,
-                            alignment=ft.alignment.center), 
-                            ]),
-            ],
+                                configure_rutina,
+                                monitoreo_rutina])],
+                    alignment=ft.MainAxisAlignment.CENTER),
+                ft.Container(
+                    content=cerrar_sesion,
+                    alignment=ft.alignment.center)
+                ],
             alignment=ft.MainAxisAlignment.CENTER
         ),
         

@@ -69,8 +69,8 @@ class Robot():
                     alignment=ft.alignment.center
                 ),
             ],
-            height=60,
-            width=500,
+            height=45,
+            width=700,
             spacing=10,
             alignment=ft.MainAxisAlignment.CENTER
         )
@@ -80,6 +80,7 @@ class Robot():
             'name': self.name,
             'urdf_path': self.modelo.rutaURDF,
             'sdf_path': self.modelo.rutaSDF,
-            'nav_param_path': self.modelo.nav_path
+            'nav_param_path': self.modelo.nav_path,
+            'has_camera': self.has_camera
         }
 
