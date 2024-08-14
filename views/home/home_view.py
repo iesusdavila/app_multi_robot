@@ -342,7 +342,7 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
                 icon=ft.icons.ROCKET_LAUNCH),
             leading_width=60,
             title=ft.Text(
-                value="Robots disponibles",
+                value="Robots Disponibles",
                 style=ft.TextStyle(
                     size=40,
                     weight=ft.FontWeight.BOLD)),
