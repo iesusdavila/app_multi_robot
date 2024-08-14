@@ -109,9 +109,45 @@ def ModeloView(page: ft.Page, myPyrebase: PyrebaseWrapper):
             height=350
         ),
         actions=[
-            ft.TextButton("Guardar", on_click=save_model),
-            ft.TextButton("Cancelar", on_click=close_dialog)
-        ],
+                ft.TextButton(
+                    content=ft.Container(
+                        content=ft.Row(
+                            controls=[
+                                ft.Text("Guardar", size=18),
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
+                        ),
+                        alignment=ft.alignment.center,
+                    ), 
+                    width=150,
+                    height=40,
+                    on_click=save_model,
+                    style=ft.ButtonStyle(
+                        shape=ft.RoundedRectangleBorder(radius=8),  
+                        color={"": ft.colors.BLACK},  
+                        bgcolor={"": ft.colors.GREEN_ACCENT_400},
+                    )
+                ),
+                ft.TextButton(
+                    content=ft.Container(
+                        content=ft.Row(
+                            controls=[
+                                ft.Text("Cancelar", size=18),
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
+                        ),
+                        alignment=ft.alignment.center,
+                    ), 
+                    width=150,
+                    height=40,
+                    on_click=close_dialog,
+                    style=ft.ButtonStyle(
+                        shape=ft.RoundedRectangleBorder(radius=8),  
+                        color={"": ft.colors.BLACK},  
+                        bgcolor={"": ft.colors.BLUE_GREY_200},
+                    )
+                )
+            ],
         actions_alignment=ft.MainAxisAlignment.END
     )
 
