@@ -27,14 +27,15 @@ class Robot():
                         text_align=ft.TextAlign.CENTER,
                         style=ft.TextStyle(
                             size=16,
-                            weight=ft.FontWeight.BOLD,
+                            weight=ft.FontWeight.NORMAL,
                             color=ft.colors.BLACK
                         )
                     ),
-                    bgcolor=ft.colors.GREY_200,
                     padding=10,
-                    expand=1,
-                    alignment=ft.alignment.center
+                    expand=2,
+                    bgcolor=ft.colors.GREY_300,
+                    alignment=ft.alignment.center,
+                    border_radius=ft.BorderRadius(5, 5, 5, 5),
                 ),
                 ft.Container(
                     content=ft.Text(
@@ -42,15 +43,16 @@ class Robot():
                         expand=1,
                         text_align=ft.TextAlign.CENTER,
                         style=ft.TextStyle(
-                            size=14,
+                            size=16,
                             weight=ft.FontWeight.NORMAL,
                             color="black"
                         )
                     ),
                     padding=10,
                     expand=2,
+                    bgcolor=ft.colors.GREY_300,
                     alignment=ft.alignment.center,
-                    bgcolor=ft.colors.GREY_200
+                    border_radius=ft.BorderRadius(5, 5, 5, 5),
                 ),
                 ft.Container(
                     content=ft.Text(
@@ -58,15 +60,16 @@ class Robot():
                         expand=1,
                         text_align=ft.TextAlign.CENTER,
                         style=ft.TextStyle(
-                            size=14,
+                            size=16,
                             weight=ft.FontWeight.NORMAL,
                             color="black"
                         )
                     ),
                     padding=10,
                     expand=2,
-                    bgcolor=ft.colors.GREY_200,
-                    alignment=ft.alignment.center
+                    bgcolor=ft.colors.GREY_300,
+                    alignment=ft.alignment.center,
+                    border_radius=ft.BorderRadius(5, 5, 5, 5),
                 ),
             ],
             height=45,
