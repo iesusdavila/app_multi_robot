@@ -11,8 +11,8 @@ def WorldsView(page: ft.Page, myPyrebase: PyrebaseWrapper):
     world_listview = ft.ListView(
         spacing=10, 
         padding=20, 
-        auto_scroll=True,
-        height=100, 
+        auto_scroll=False,
+        height=300, 
         width=300)
     name_input = ft.TextField(
         label="Nombre mundo")
@@ -29,17 +29,26 @@ def WorldsView(page: ft.Page, myPyrebase: PyrebaseWrapper):
             content=ft.Text(
                 value="Nombre mundos",
                 style=ft.TextStyle(
-                    size=20,
-                    weight=ft.FontWeight.W_400)
-            ),
-            bgcolor=ft.colors.GREY_400,
+                        size=16,
+                        weight=ft.FontWeight.W_500,
+                        color=ft.colors.GREY_100)),
+            bgcolor=ft.colors.GREY_600,
+            padding=10,
+            border_radius=ft.BorderRadius(5, 5, 5, 5),
             alignment=ft.alignment.center)
         world_listview.controls.append(encabezado)
         for world in world_list:
             fila = ft.Container(
                 content=ft.Text(
-                    value=world.name),
+                    value=world.name,
+                    style=ft.TextStyle(
+                                size=16,
+                                weight=ft.FontWeight.NORMAL,
+                                color=ft.colors.BLACK),
+                            text_align=ft.TextAlign.CENTER),
                 alignment=ft.alignment.center,
+                border_radius=ft.BorderRadius(5, 5, 5, 5),
+                height=60,
                 bgcolor=ft.colors.GREY_300)
             world_listview.controls.append(fila)
         page.update()
@@ -94,9 +103,24 @@ def WorldsView(page: ft.Page, myPyrebase: PyrebaseWrapper):
         page.update()
 
     add_world_button = ft.ElevatedButton(
-        text="Agregar mundo", 
-        icon=ft.icons.ADD_BOX, 
-        on_click=show_add_world)
+        content=ft.Container(
+            content=ft.Row(
+                controls=[
+                    ft.Icon(
+                        name=ft.icons.ADD_BOX, 
+                        size=18),
+                    ft.Text(
+                        value="Agregar mundo", 
+                        size=18)],
+                alignment=ft.MainAxisAlignment.CENTER),
+            alignment=ft.alignment.center),
+        on_click=show_add_world,
+        width=220, 
+        height=40,
+        style=ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(radius=8),  
+            color={"": ft.colors.WHITE},  
+            bgcolor={"": ft.colors.TEAL_ACCENT_700}))
     
     def go_home(e):
         page.go('/home')
@@ -112,12 +136,14 @@ def WorldsView(page: ft.Page, myPyrebase: PyrebaseWrapper):
         world_list = obtain_world_list()
         construir_tabla(world_list)
         page.appbar = ft.AppBar(
+            toolbar_height=65,
             leading=ft.IconButton(
                 icon=ft.icons.HOME,
-                on_click=go_home),
+                on_click=go_home,
+                scale=1.2),
             leading_width=60,
             title=ft.Text(
-                value="Mundos disponibles",
+                value="Mundos Disponibles",
                 style=ft.TextStyle(
                     size=30,
                     weight=ft.FontWeight.BOLD)),
@@ -125,6 +151,7 @@ def WorldsView(page: ft.Page, myPyrebase: PyrebaseWrapper):
             bgcolor=ft.colors.GREY_200,
             actions=[
                 ft.PopupMenuButton(
+                    scale=1.2,
                     items=[
                         ft.PopupMenuItem(
                             text=str(myPyrebase.email)),
@@ -137,9 +164,10 @@ def WorldsView(page: ft.Page, myPyrebase: PyrebaseWrapper):
     world_view = ft.SafeArea(
         expand=True,
         content=ft.Column(
+            spacing=40,
             controls=[
                 ft.Container(
-                    height=10),
+                    height=20),
                 ft.Container(
                     content=add_world_button,
                     alignment=ft.alignment.center),

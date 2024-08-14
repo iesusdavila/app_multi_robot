@@ -258,12 +258,14 @@ def ConfigureWorld(page: ft.Page, myPyrebase: PyrebaseWrapper):
         robot_list = obtain_robot_list()
         robot_combobox.options = [ft.dropdown.Option(robot.name) for robot in robot_list]
         page.appbar = ft.AppBar(
+            toolbar_height=65,
             leading=ft.IconButton(
                 icon=ft.icons.ARROW_BACK_ROUNDED,
-                on_click=go_gz_list),
+                on_click=go_gz_list,
+                scale=1.2),
             leading_width=60,
             title=ft.Text(
-                value="Configurar mundo en gazebo",
+                value="Configurar Mundo Gazebo",
                 style=ft.TextStyle(
                     size=30,
                     weight=ft.FontWeight.BOLD)),
@@ -271,6 +273,7 @@ def ConfigureWorld(page: ft.Page, myPyrebase: PyrebaseWrapper):
             bgcolor=ft.colors.GREY_200,
             actions=[
                 ft.PopupMenuButton(
+                    scale=1.2,
                     items=[
                         ft.PopupMenuItem(
                             text=str(myPyrebase.email)),

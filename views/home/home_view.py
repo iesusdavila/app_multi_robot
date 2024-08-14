@@ -338,8 +338,10 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
         build_robot_list(all_robots)
         page.window_maximized = False
         page.appbar = ft.AppBar(
+            toolbar_height=65,
             leading=ft.IconButton(
-                icon=ft.icons.ROCKET_LAUNCH),
+                icon=ft.icons.ROCKET_LAUNCH,
+                scale=1.2),
             leading_width=60,
             title=ft.Text(
                 value="Robots disponibles",
@@ -350,6 +352,7 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
             bgcolor=ft.colors.GREY_200,
             actions=[
                 ft.PopupMenuButton(
+                    scale=1.2,
                     items=[
                         ft.PopupMenuItem(
                             text=str(myPyrebase.email)),
