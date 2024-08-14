@@ -12,7 +12,7 @@ def ModeloView(page: ft.Page, myPyrebase: PyrebaseWrapper):
         spacing=10, 
         padding=20, 
         auto_scroll=False, 
-        height=500, 
+        height=300, 
         width=300,)
 
     def construir_tabla(modelo_list: list):
@@ -20,22 +20,28 @@ def ModeloView(page: ft.Page, myPyrebase: PyrebaseWrapper):
         encabezado = ft.Container(
                 content=ft.Text(
                     value="Nombre modelo",
-                    color=ft.colors.BLACK,
                     style=ft.TextStyle(
-                        size=20,
-                        weight=ft.FontWeight.W_400)),
-                bgcolor=ft.colors.GREY_100,
+                        size=16,
+                        weight=ft.FontWeight.W_500,
+                        color=ft.colors.GREY_100)),
+                bgcolor=ft.colors.GREY_600,
+                padding=10,
+                border_radius=ft.BorderRadius(5, 5, 5, 5),
                 alignment=ft.alignment.center)
         modelo_table.controls.append(encabezado)
         for modelo in modelo_list:
             fila = ft.Container(
                         content=ft.Text(
                             value=modelo.nombre,
-                            color=ft.colors.BLACK,
+                            style=ft.TextStyle(
+                                size=16,
+                                weight=ft.FontWeight.NORMAL,
+                                color=ft.colors.BLACK),
                             text_align=ft.TextAlign.CENTER),
-                        bgcolor=ft.colors.GREY_200,
+                        bgcolor=ft.colors.GREY_300,
                         height=60,
                         width=250,
+                        border_radius=ft.BorderRadius(5, 5, 5, 5),
                         alignment=ft.alignment.center)
             modelo_table.controls.append(fila)
         page.update()
@@ -124,15 +130,31 @@ def ModeloView(page: ft.Page, myPyrebase: PyrebaseWrapper):
         page.update()
 
     button_add_model = ft.ElevatedButton(
-        text="Agregar Modelo", 
+        content=ft.Container(
+            content=ft.Row(
+                controls=[
+                    ft.Icon(
+                        name=ft.icons.ADD_BOX, 
+                        size=18),
+                    ft.Text(
+                        value="Agregar modelo", 
+                        size=18)],
+                alignment=ft.MainAxisAlignment.CENTER),
+            alignment=ft.alignment.center), 
         on_click=show_add_model_dialog,
-        icon=ft.icons.ADD_BOX_OUTLINED)
+        width=220, 
+        height=40,
+        style=ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(radius=8),  
+            color={"": ft.colors.WHITE},  
+            bgcolor={"": ft.colors.TEAL_ACCENT_700}))
     
     modelo_view = ft.SafeArea(
         content=ft.Column(
+            spacing=40,
             controls=[
                 ft.Container(
-                    height=10),
+                    height=20),
                 ft.Container(
                     content=button_add_model,
                     alignment=ft.alignment.center),
@@ -157,7 +179,7 @@ def ModeloView(page: ft.Page, myPyrebase: PyrebaseWrapper):
                     size=40,
                     weight=ft.FontWeight.BOLD)),
             center_title=True,
-            bgcolor=ft.colors.GREY_200,
+            bgcolor=ft.colors.GREY_300,
             actions=[
                 ft.PopupMenuButton(
                     items=[

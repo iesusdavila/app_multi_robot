@@ -17,7 +17,8 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
         page.dialog = ft.AlertDialog(
             modal=True,
             elevation=1,
-            title=ft.Text("Agregar robot"),
+            title=ft.Container(
+                content=ft.Text("Agregar robot")),
             title_padding=15,
             content=ft.Container(
                 content=ft.Column(
