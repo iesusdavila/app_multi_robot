@@ -18,7 +18,7 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
             modal=True,
             elevation=1,
             title=ft.Container(
-                content=ft.Text("Agregar robot")),
+                content=ft.Text("Agregar Robot")),
             title_padding=15,
             content=ft.Container(
                 content=ft.Column(
@@ -30,8 +30,44 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
                 width=500,
                 height=300),
             actions=[
-                ft.TextButton("Guardar", on_click=save_robot),
-                ft.TextButton("Cancelar", on_click=close_dialog)
+                ft.TextButton(
+                    content=ft.Container(
+                        content=ft.Row(
+                            controls=[
+                                ft.Text("Guardar", size=18),
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
+                        ),
+                        alignment=ft.alignment.center,
+                    ), 
+                    width=150,
+                    height=40,
+                    on_click=save_robot,
+                    style=ft.ButtonStyle(
+                        shape=ft.RoundedRectangleBorder(radius=8),  
+                        color={"": ft.colors.BLACK},  
+                        bgcolor={"": ft.colors.GREEN_ACCENT_400},
+                    )
+                ),
+                ft.TextButton(
+                    content=ft.Container(
+                        content=ft.Row(
+                            controls=[
+                                ft.Text("Cancelar", size=18),
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
+                        ),
+                        alignment=ft.alignment.center,
+                    ), 
+                    width=150,
+                    height=40,
+                    on_click=close_dialog,
+                    style=ft.ButtonStyle(
+                        shape=ft.RoundedRectangleBorder(radius=8),  
+                        color={"": ft.colors.BLACK},  
+                        bgcolor={"": ft.colors.BLUE_GREY_200},
+                    )
+                )
             ],
             actions_alignment=ft.MainAxisAlignment.END
         )
@@ -262,17 +298,60 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
     build_robot_list(all_robots)
 
     name_input = ft.TextField(
-        label="Nombre robot")
+        label="Nombre del Robot",
+        label_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK,
+        ),
+        border_color=ft.colors.BLACK,
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        bgcolor=ft.colors.BLUE_GREY_50,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK,
+        ),
+    )
     combobox_model = ft.Dropdown(
-            options=[ft.dropdown.Option(modelo.nombre) for modelo in modelos],
-            label="Selecciona un modelo",
-        )
+        options=[ft.dropdown.Option(modelo.nombre) for modelo in modelos],
+        label="Seleccionar Modelo",
+        label_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK,
+        ),
+        border_color=ft.colors.BLACK,
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        bgcolor=ft.colors.BLUE_GREY_50,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK,
+        ),
+    )
     combobox_control_type= ft.Dropdown(
-            options=[ft.dropdown.Option(control_type) for control_type in control_types],
-            label="Selecciona un control_type"
-        )
+        options=[ft.dropdown.Option(control_type) for control_type in control_types],
+        label="Seleccionar Tipo de Control",
+        label_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK,
+        ),
+        border_color=ft.colors.BLACK,
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        bgcolor=ft.colors.BLUE_GREY_50,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK,
+        ),
+    )
     has_camera = ft.Switch(
-        label="Camara", value=False)
+        label="Camara",
+        value=False,
+        label_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK,
+        ),
+        active_color=ft.colors.ORANGE_ACCENT_400,
+        inactive_thumb_color=ft.colors.GREY_400,
+        inactive_track_color=ft.colors.GREY_200,
+    )
 
     def find_model_by_name(name: str, models: list[Modelo]) -> Modelo:
         for modelo in models:
