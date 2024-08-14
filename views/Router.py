@@ -1,6 +1,8 @@
 import flet as ft
 import os
 
+from db.flet_pyrebase import PyrebaseWrapper
+
 # views
 from views.login.login_view import LoginView
 from views.register.register_view import RegisterView
@@ -33,19 +35,19 @@ if not os.path.exists(rutina_dir):
 
 class Router:
 
-    def __init__(self, page, myPyrebase):
+    def __init__(self, page: ft.Page, myPyrebase: PyrebaseWrapper):
         self.page = page
         self.routes = {
             "/": LoginView(page, myPyrebase),
             "/home": HomeView(page, myPyrebase),
-            "/add_model": ModeloView(page),
+            "/add_model": ModeloView(page, myPyrebase),
             "/register": RegisterView(page, myPyrebase),
-            "/worlds": WorldsView(page),
-            "/environments": ExecuteGazebo(page),
-            "/config_gz": ConfigureWorld(page),
-            "/rutina": ExecuteRutina(page),
-            "/config_rutina": ConfigureRutina(page),
-            "/monitor": MonitorView(page)
+            "/worlds": WorldsView(page, myPyrebase),
+            "/environments": ExecuteGazebo(page, myPyrebase),
+            "/config_gz": ConfigureWorld(page, myPyrebase),
+            "/rutina": ExecuteRutina(page, myPyrebase),
+            "/config_rutina": ConfigureRutina(page, myPyrebase),
+            "/monitor": MonitorView(page, myPyrebase)
         }
         self.body = ft.Container(content=self.routes['/']["view"])
 

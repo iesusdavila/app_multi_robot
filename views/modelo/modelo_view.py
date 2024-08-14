@@ -2,9 +2,9 @@ import flet as ft
 from funciones import obtain_model_list, add_model
 from user_controls.modelo import Modelo
 from user_controls.file_selector import FileSelector
-import os
+from db.flet_pyrebase import PyrebaseWrapper
 
-def ModeloView(page: ft.Page):
+def ModeloView(page: ft.Page, myPyrebase: PyrebaseWrapper):
     title = 'Modelo'
     modelo_list = obtain_model_list()
     modelo_table = ft.ListView(
@@ -12,18 +12,28 @@ def ModeloView(page: ft.Page):
         spacing=10, 
         padding=20, 
         auto_scroll=False, 
-        height=100, 
+        height=500, 
         width=300,)
 
     def construir_tabla(modelo_list: list):
         modelo_table.controls.clear()
+        encabezado = ft.Container(
+                content=ft.Text(
+                    value="Nombre modelo",
+                    color=ft.colors.BLACK,
+                    style=ft.TextStyle(
+                        size=20,
+                        weight=ft.FontWeight.W_400)),
+                bgcolor=ft.colors.GREY_100,
+                alignment=ft.alignment.center)
+        modelo_table.controls.append(encabezado)
         for modelo in modelo_list:
             fila = ft.Container(
                         content=ft.Text(
                             value=modelo.nombre,
-                            color=ft.colors.ON_SECONDARY,
+                            color=ft.colors.BLACK,
                             text_align=ft.TextAlign.CENTER),
-                        bgcolor=ft.colors.random_color(),
+                        bgcolor=ft.colors.GREY_200,
                         height=60,
                         width=250,
                         alignment=ft.alignment.center)
@@ -31,11 +41,7 @@ def ModeloView(page: ft.Page):
         page.update()
     
     construir_tabla(modelo_list)
-    modelos_label = ft.Text(
-        value="Modelos disponibles",
-        size=40, 
-        style=ft.TextStyle(weight=ft.FontWeight.BOLD),
-        text_align=ft.TextAlign.CENTER)
+    
     nombre_input = ft.TextField(label="Nombre del modelo")
     urdf_input = ft.Text(
         value="Ruta URDF",
@@ -49,9 +55,6 @@ def ModeloView(page: ft.Page):
         value="Ruta archivo navegacion",
         style=ft.TextStyle(weight=ft.FontWeight.BOLD))
     nav_picker = FileSelector()
-
-    def on_page_load():
-        pass
 
     def save_model(e):
         nuevo_modelo = Modelo(
@@ -113,37 +116,59 @@ def ModeloView(page: ft.Page):
 
     def go_home(e):
         page.go('/home')
-        page.update() 
+        page.update()
 
-    button_go_home = ft.ElevatedButton(
-        text="Regresar a Home", 
-        on_click=go_home)
+    def sign_out(e):
+        myPyrebase.sign_out()
+        page.go('/')
+        page.update()
+
     button_add_model = ft.ElevatedButton(
         text="Agregar Modelo", 
-        on_click=show_add_model_dialog)
+        on_click=show_add_model_dialog,
+        icon=ft.icons.ADD_BOX_OUTLINED)
     
     modelo_view = ft.SafeArea(
         content=ft.Column(
             controls=[
                 ft.Container(
-                    modelos_label,
+                    height=10),
+                ft.Container(
+                    content=button_add_model,
                     alignment=ft.alignment.center),
-                ft.Row(
-                    controls=[
-                        ft.Container(expand=1),
-                        ft.Container(modelo_table, expand=2),
-                        ft.Column(
-                            controls=[
-                                button_add_model,
-                                button_go_home
-                            ],
-                            expand=1
-                        )
-                    ]
-                )
-            ]
+                ft.Container(
+                    content=modelo_table,
+                    alignment=ft.alignment.center)]
         )
     )
+
+    def on_page_load():
+        nonlocal modelo_list
+        modelo_list = obtain_model_list()
+        construir_tabla(modelo_list)
+        page.appbar = ft.AppBar(
+            leading=ft.IconButton(
+                icon=ft.icons.HOME,
+                on_click=go_home),
+            leading_width=60,
+            title=ft.Text(
+                value="Modelos",
+                style=ft.TextStyle(
+                    size=40,
+                    weight=ft.FontWeight.BOLD)),
+            center_title=True,
+            bgcolor=ft.colors.GREY_200,
+            actions=[
+                ft.PopupMenuButton(
+                    items=[
+                        ft.PopupMenuItem(
+                            text=str(myPyrebase.email)),
+                        ft.PopupMenuItem(
+                            text="Cerrar Sesion",
+                            icon=ft.icons.LOGOUT_ROUNDED,
+                            on_click=sign_out)])])
+        page.update()
+        
     return {
         "view": modelo_view,
         "title": title,

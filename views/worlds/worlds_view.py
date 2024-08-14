@@ -2,17 +2,12 @@ import flet as ft
 from funciones import obtain_world_list, add_world
 from user_controls.world import World
 from user_controls.file_selector import FileSelector
-import os
+from db.flet_pyrebase import PyrebaseWrapper
 
-def WorldsView(page: ft.Page):
+def WorldsView(page: ft.Page, myPyrebase: PyrebaseWrapper):
     title = "Worlds"
     world_list = obtain_world_list()
 
-    world_label = ft.Text(
-        value='Mundos disponibles', 
-        size=30, 
-        style=ft.TextStyle(weight=ft.FontWeight.BOLD), 
-        text_align=ft.TextAlign.CENTER)
     world_listview = ft.ListView(
         spacing=10, 
         padding=20, 
@@ -30,9 +25,22 @@ def WorldsView(page: ft.Page):
 
     def construir_tabla(world_list: list[World]):
         world_listview.controls.clear()
+        encabezado = ft.Container(
+            content=ft.Text(
+                value="Nombre mundos",
+                style=ft.TextStyle(
+                    size=20,
+                    weight=ft.FontWeight.W_400)
+            ),
+            bgcolor=ft.colors.GREY_400,
+            alignment=ft.alignment.center)
+        world_listview.controls.append(encabezado)
         for world in world_list:
-            fila = ft.Row(controls=[
-                ft.Text(world.name)])
+            fila = ft.Container(
+                content=ft.Text(
+                    value=world.name),
+                alignment=ft.alignment.center,
+                bgcolor=ft.colors.GREY_300)
             world_listview.controls.append(fila)
         page.update()
 
@@ -92,33 +100,52 @@ def WorldsView(page: ft.Page):
     
     def go_home(e):
         page.go('/home')
+        page.update()
+
+    def sign_out(e):
+        myPyrebase.sign_out()
+        page.go('/')
         page.update() 
 
-    add_return = ft.ElevatedButton(
-        text="Regresar a home", 
-        icon=ft.icons.ADD_CARD, 
-        on_click=go_home)
-
     def on_page_load():
-        pass
+        nonlocal world_list
+        world_list = obtain_world_list()
+        construir_tabla(world_list)
+        page.appbar = ft.AppBar(
+            leading=ft.IconButton(
+                icon=ft.icons.HOME,
+                on_click=go_home),
+            leading_width=60,
+            title=ft.Text(
+                value="Mundos disponibles",
+                style=ft.TextStyle(
+                    size=30,
+                    weight=ft.FontWeight.BOLD)),
+            center_title=True,
+            bgcolor=ft.colors.GREY_200,
+            actions=[
+                ft.PopupMenuButton(
+                    items=[
+                        ft.PopupMenuItem(
+                            text=str(myPyrebase.email)),
+                        ft.PopupMenuItem(
+                            text="Cerrar Sesion",
+                            icon=ft.icons.LOGOUT_ROUNDED,
+                            on_click=sign_out)])])
+        page.update()
 
     world_view = ft.SafeArea(
         expand=True,
         content=ft.Column(
             controls=[
                 ft.Container(
-                    content=world_label,
+                    height=10),
+                ft.Container(
+                    content=add_world_button,
                     alignment=ft.alignment.center),
-                ft.Row(
-                    controls=[
-                        ft.Column(
-                            controls=[
-                                add_world_button,
-                                add_return
-                            ]
-                        ),
-                        ft.Container(world_listview)
-                    ]),
+                ft.Container(
+                    content=world_listview,
+                    alignment=ft.alignment.center),
             ]
         )
     )

@@ -3,9 +3,9 @@ from funciones import obtain_world_list, obtain_robot_list, gazebo_dir
 from user_controls.world import World
 from user_controls.robot import Robot
 import yaml
-import os
+from db.flet_pyrebase import PyrebaseWrapper
 
-def ConfigureWorld(page: ft.Page):
+def ConfigureWorld(page: ft.Page, myPyrebase: PyrebaseWrapper):
     title = "Configurar mundos"
 
     world_list: list[World] = list()
@@ -68,7 +68,8 @@ def ConfigureWorld(page: ft.Page):
         print(path)
         with open(path, 'w') as file:
             datos = {'world': world.to_yaml(),
-                     'robots': robots}
+                     'robots': robots,
+                     'running': False}
             yaml.dump(datos, file)
 
     def save_file(e):
@@ -121,10 +122,6 @@ def ConfigureWorld(page: ft.Page):
             add_robot_button.disabled = False
         add_robot_button.update()
 
-    label_title = ft.Text(
-        value="Configurar mundo en gazebo",
-        style=ft.TextStyle(weight=ft.FontWeight.BOLD),
-        size=40)
     world_combobox = ft.Dropdown(
         label="Mundo",
         hint_text="Elige el mundo",
@@ -208,18 +205,11 @@ def ConfigureWorld(page: ft.Page):
         page.go("/environments")
         page.update()
 
-    return_gz_list = ft.ElevatedButton(
-        text="Lista entornos",
-        icon=ft.icons.BACKUP,
-        on_click=go_gz_list
-    )
-
     configure_view = ft.SafeArea(
         content=ft.Column(
             controls=[
                 ft.Container(
-                    content=label_title,
-                    alignment=ft.alignment.center),
+                    height=10),
                 ft.Container(
                     content=world_combobox,
                     alignment=ft.alignment.center),
@@ -244,19 +234,22 @@ def ConfigureWorld(page: ft.Page):
                     alignment=ft.alignment.center),
                 ft.Container(
                     content=save_button,
-                    alignment=ft.alignment.center),
-                ft.Container(
-                    content=return_gz_list,
                     alignment=ft.alignment.center)
             ],
             spacing=20
         )
     )
 
+    def sign_out(e):
+        myPyrebase.sign_out()
+        page.go('/')
+        page.update()
+
     def on_page_load():
-        nonlocal robot_configure_list, num_robots, world_list, robot_list
+        nonlocal robot_configure_list, num_robots, world_list, robot_list, num_robots_input
         robot_configure_list = []
         num_robots = 0
+        num_robots_input.value = "0"
         widget_robots.controls.clear()
         world_combobox.value = None
         robot_combobox.value = None
@@ -264,6 +257,27 @@ def ConfigureWorld(page: ft.Page):
         world_combobox.options = [ft.dropdown.Option(world.name) for world in world_list]
         robot_list = obtain_robot_list()
         robot_combobox.options = [ft.dropdown.Option(robot.name) for robot in robot_list]
+        page.appbar = ft.AppBar(
+            leading=ft.IconButton(
+                icon=ft.icons.ARROW_BACK_ROUNDED,
+                on_click=go_gz_list),
+            leading_width=60,
+            title=ft.Text(
+                value="Configurar mundo en gazebo",
+                style=ft.TextStyle(
+                    size=30,
+                    weight=ft.FontWeight.BOLD)),
+            center_title=True,
+            bgcolor=ft.colors.GREY_200,
+            actions=[
+                ft.PopupMenuButton(
+                    items=[
+                        ft.PopupMenuItem(
+                            text=str(myPyrebase.email)),
+                        ft.PopupMenuItem(
+                            text="Cerrar Sesion",
+                            icon=ft.icons.LOGOUT_ROUNDED,
+                            on_click=sign_out)])])
         page.update()
 
 

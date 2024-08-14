@@ -2,9 +2,10 @@ import flet as ft
 import yaml
 from user_controls.robot import Robot
 from user_controls.world import World
-from funciones import obtain_robot_list, list_files_in_directory, obtain_robots_to_gz,rutina_dir, gazebo_dir
+from funciones import list_files_in_directory, obtain_robots_to_gz, rutina_dir, gazebo_dir
+from db.flet_pyrebase import PyrebaseWrapper
 
-def ConfigureRutina(page: ft.Page):
+def ConfigureRutina(page: ft.Page, myPyrebase: PyrebaseWrapper):
     title = "Configurar rutina"
 
     num_poses = 0
@@ -12,11 +13,6 @@ def ConfigureRutina(page: ft.Page):
     robot_list = []
     current_robot = dict()
     robot_info = dict()
-
-    rutina_label = ft.Text(
-        value="Configurar rutina",
-        style=ft.TextStyle(weight=ft.FontWeight.BOLD),
-        size=40)
     
     def actualize_robots(e):
         nonlocal robot_list
@@ -68,12 +64,24 @@ def ConfigureRutina(page: ft.Page):
             dropdown_master.disabled = True
             dropdown_master.value = None
             check_hierarchy.disabled = False
+            check_max_time.disabled = True
+            add_num_pose_button.disabled = True
+            remove_num_pose_button.disabled = True
+            add_pose.disabled = True
         else:
             check_hierarchy.value = True
             dropdown_master.disabled = False
             check_hierarchy.disabled = True
+            check_max_time.disabled = False
+            add_num_pose_button.disabled = False
+            remove_num_pose_button.disabled = False
+            add_pose.disabled = False
         dropdown_master.update()
         check_hierarchy.update()
+        check_max_time.update()
+        add_num_pose_button.update()
+        remove_num_pose_button.update()
+        add_pose.update()
 
     check_master = ft.Checkbox(
         label="Es master?",
@@ -205,6 +213,10 @@ def ConfigureRutina(page: ft.Page):
             "yaw": float(yaw.value)}
         robot_info[current_robot["name"]]['poses'].append(pose)
         build_table_pose()
+        x_pose.value = None
+        y_pose.value = None
+        z_pose.value = None
+        yaw.value = None
         page.dialog.open = False
         page.update()
 
@@ -237,12 +249,17 @@ def ConfigureRutina(page: ft.Page):
         duration_time.value = 0
         pose_goals_field.value = 0
         num_poses = 0
+        dropdown_robot.value = None
+        add_num_pose_button.disabled = False
+        add_pose.disabled = False
+        remove_num_pose_button.disabled = False
+        print(robot_info)
         page.update()
 
     file_name_rutina = ft.TextField(
         label="Nombre del archivo")
 
-    def write_rutina():
+    def write_rutina(e):
         nonlocal robot_info
         path = rutina_dir + '/' + file_name_rutina.value + '.yaml'
         data = []
@@ -251,7 +268,6 @@ def ConfigureRutina(page: ft.Page):
             robot_data['name'] = robot_name
             robot_data['is_master'] = robot_info[robot_name]['is_master']
             robot_data['has_camera'] = robot_info[robot_name]['has_camera']
-            robot_data['same_time_task'] = robot_info[robot_name]['same_time_task']
             if not robot_info[robot_name]['is_master']:
                 robot_data['name_master'] = robot_info[robot_name]['name_master']
                 robot_data['has_max_time'] = robot_info[robot_name]['has_max_time']
@@ -264,12 +280,14 @@ def ConfigureRutina(page: ft.Page):
                     robot_data[name]['y'] = pose['y']
                     robot_data[name]['z'] = pose['z']
                     robot_data[name]['yaw'] = pose['yaw']
+            else:
+                robot_data['same_time_task'] = robot_info[robot_name]['same_time_task']
             data.append(robot_data)
         with open(path, 'w') as file:
             datos = {'robots': data}
             yaml.dump(datos, file)
         
-    def finish_configuration():
+    def finish_configuration(e):
         page.dialog = ft.AlertDialog(
             modal=True,
             elevation=20,
@@ -280,11 +298,10 @@ def ConfigureRutina(page: ft.Page):
                 height=200,
                 content=file_name_rutina),
             actions=[
-                ft.TextButton("Guardar", on_click=save_pose),
+                ft.TextButton("Guardar", on_click=write_rutina),
                 ft.TextButton("Cancelar", on_click=close_dialog)
             ],
             actions_alignment=ft.MainAxisAlignment.END)
-        write_rutina()
         page.dialog.open = True
         page.update()
     
@@ -296,10 +313,40 @@ def ConfigureRutina(page: ft.Page):
         text="Finalizar",
         on_click=finish_configuration)
     
+    def go_list_rutinas(e):
+        page.go("/rutina")
+        page.update()
+
+    def sign_out(e):
+        myPyrebase.sign_out()
+        page.go('/')
+        page.update()
+
     def on_page_load():
         nonlocal entornos_files
         entornos_files = list_files_in_directory(gazebo_dir)
         dropdown_entorno.options = [ft.dropdown.Option(name) for name in entornos_files]
+        page.appbar = ft.AppBar(
+            leading=ft.IconButton(
+                icon=ft.icons.ARROW_BACK_ROUNDED,
+                on_click=go_list_rutinas),
+            leading_width=60,
+            title=ft.Text(
+                value="Configurar rutina",
+                style=ft.TextStyle(
+                    size=30,
+                    weight=ft.FontWeight.BOLD)),
+            center_title=True,
+            bgcolor=ft.colors.GREY_200,
+            actions=[
+                ft.PopupMenuButton(
+                    items=[
+                        ft.PopupMenuItem(
+                            text=str(myPyrebase.email)),
+                        ft.PopupMenuItem(
+                            text="Cerrar Sesion",
+                            icon=ft.icons.LOGOUT_ROUNDED,
+                            on_click=sign_out)])])
         page.update()
     
     rutina_view = ft.SafeArea(
@@ -308,9 +355,10 @@ def ConfigureRutina(page: ft.Page):
             spacing=20,
             controls=[
                 ft.Container(
-                    content=rutina_label,
-                    alignment=ft.alignment.center),
-                dropdown_entorno,
+                    height=10),
+                ft.Container(
+                    content=dropdown_entorno,
+                    alignment=ft.alignment.center_left),
                 ft.Row(
                     spacing=30,
                     controls=[

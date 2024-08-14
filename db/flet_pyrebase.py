@@ -16,6 +16,7 @@ class PyrebaseWrapper:
         ### Where we store the temporary token and permanent user ID while app is running
         self.idToken = None
         self.uuid = None
+        self.email = None
         ### If app was recently runnnig we can grab the token from user's machine.
         self.check_token()
 
@@ -43,6 +44,7 @@ class PyrebaseWrapper:
         if user:
             token = user["idToken"]
             uuid = user["localId"]
+            self.email = user['email']
             self.save_tokens(token, uuid, self.page)
 
     def sign_out(self):

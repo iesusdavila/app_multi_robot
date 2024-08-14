@@ -22,8 +22,6 @@ def main(page: ft.Page):
     page.add(
         Boton(
             text="Prueba",
-            on_click=ok_clicked
-        )
-    )
+            on_click=ok_clicked))
 
 ft.app(target=main)

@@ -5,8 +5,12 @@ def LoginView(page: ft.Page, myPyrebase: PyrebaseWrapper):
     title = "Login"
 
     def on_page_load():
+        page.platform = ft.PagePlatform.LINUX
+        # page.window_maximized = True
+        page.appbar = None
         if myPyrebase.check_token():
             page.go('/home')
+            page.update()
 
     def handle_sign_in(e):
         try:
@@ -16,6 +20,7 @@ def LoginView(page: ft.Page, myPyrebase: PyrebaseWrapper):
             email.value = ""
             password.value = ""
             page.go('/home')
+            page.update()
         except:
             handle_sign_in_error()
             page.update()
@@ -32,6 +37,7 @@ def LoginView(page: ft.Page, myPyrebase: PyrebaseWrapper):
 
     def handle_register(e):
         page.go("/register")
+        page.update()
 
     def highlight_link(e):
         e.control.style.color = ft.colors.BLUE

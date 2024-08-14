@@ -1,6 +1,7 @@
 import flet as ft
 from funciones import list_files_in_directory, launch_rutina, rutina_dir
 import threading
+from db.flet_pyrebase import PyrebaseWrapper
 
 class RutinaRow(ft.UserControl):
     def __init__(self, name):
@@ -27,26 +28,24 @@ class RutinaRow(ft.UserControl):
             self.rutina_thread.join()
 
     def build(self):
-        return ft.ResponsiveRow(
+        return ft.Row(
             controls=[
                 self.name,
-                self.play_button,
-                self.stop_button
+                ft.Row(
+                    controls=[
+                        self.play_button,
+                        self.stop_button],
+                    alignment=ft.MainAxisAlignment.END)
             ],
-            # width=700,
-            # height=100,
+            width=300,
+            height=100,
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN
         )
 
-def ExecuteRutina(page: ft.Page):
+def ExecuteRutina(page: ft.Page, myPyrebase: PyrebaseWrapper):
     title = 'Rutinas'
     
     list_rutina_files = list()
-
-    rutina_label = ft.Text(
-        value="Rutinas",
-        style=ft.TextStyle(weight=ft.FontWeight.BOLD),
-        size=40)
     
     def go_config_rutina(e):
         page.go("/config_rutina")
@@ -61,10 +60,10 @@ def ExecuteRutina(page: ft.Page):
         page.go("/home")
         page.update()
 
-    return_home = ft.ElevatedButton(
-        text="Regresar a home",
-        icon=ft.icons.HOME,
-        on_click=go_home)
+    def sign_out(e):
+        myPyrebase.sign_out()
+        page.go('/')
+        page.update()
     
     rutina_listview = ft.ListView(
         height=500,
@@ -73,7 +72,10 @@ def ExecuteRutina(page: ft.Page):
     def build_table(gz_files: list):
         rutina_listview.controls.clear()
         for file in gz_files:
-            rutina_listview.controls.append(RutinaRow(file))
+            rutina_listview.controls.append(
+                ft.Container(
+                    content=RutinaRow(file),
+                    alignment=ft.alignment.center))
         page.update()
     
     build_table(list_rutina_files)
@@ -85,21 +87,41 @@ def ExecuteRutina(page: ft.Page):
             spacing=40,
             controls=[
                 ft.Container(
-                    content=rutina_label,
+                    height=10),
+                ft.Container(
+                    content=add_rutina,
                     alignment=ft.alignment.center),
-                ft.Row(
-                    controls=[
-                        add_rutina,
-                        return_home],
-                        alignment=ft.MainAxisAlignment.CENTER),
-                rutina_listview
-            ]
+                ft.Container(
+                    content=rutina_listview,
+                    alignment=ft.alignment.center)]
         ))
 
     def on_page_load():
         nonlocal list_rutina_files
         list_rutina_files = list_files_in_directory(rutina_dir)
         build_table(list_rutina_files)
+        page.appbar = ft.AppBar(
+            leading=ft.IconButton(
+                icon=ft.icons.HOME,
+                on_click=go_home),
+            leading_width=60,
+            title=ft.Text(
+                value="Rutinas",
+                style=ft.TextStyle(
+                    size=30,
+                    weight=ft.FontWeight.BOLD)),
+            center_title=True,
+            bgcolor=ft.colors.GREY_200,
+            actions=[
+                ft.PopupMenuButton(
+                    items=[
+                        ft.PopupMenuItem(
+                            disabled=True,
+                            text=str(myPyrebase.email)),
+                        ft.PopupMenuItem(
+                            text="Cerrar Sesion",
+                            icon=ft.icons.LOGOUT_ROUNDED,
+                            on_click=sign_out)])])
         page.update()
 
     return {

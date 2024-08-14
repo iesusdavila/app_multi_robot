@@ -28,11 +28,10 @@ class Robot():
                         style=ft.TextStyle(
                             size=16,
                             weight=ft.FontWeight.BOLD,
-                            color="white"
+                            color=ft.colors.BLACK
                         )
                     ),
-                    bgcolor="black",
-                    border=ft.border.all(1),
+                    bgcolor=ft.colors.GREY_200,
                     padding=10,
                     expand=1,
                     alignment=ft.alignment.center
@@ -50,7 +49,8 @@ class Robot():
                     ),
                     padding=10,
                     expand=2,
-                    alignment=ft.alignment.center
+                    alignment=ft.alignment.center,
+                    bgcolor=ft.colors.GREY_200
                 ),
                 ft.Container(
                     content=ft.Text(
@@ -65,7 +65,7 @@ class Robot():
                     ),
                     padding=10,
                     expand=2,
-                    bgcolor="red",
+                    bgcolor=ft.colors.GREY_200,
                     alignment=ft.alignment.center
                 ),
             ],

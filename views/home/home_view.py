@@ -11,6 +11,9 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
     control_types = ["Diferencial", "Omnidireccional", "Aerial"]
 
     def show_add_robot(e):
+        nonlocal modelos, combobox_model
+        modelos = obtain_model_list()
+        combobox_model.options = [ft.dropdown.Option(modelo.nombre) for modelo in modelos]
         page.dialog = ft.AlertDialog(
             modal=True,
             elevation=1,
@@ -38,10 +41,73 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
         page.go("/add_model")
         page.update()
 
-    robot_list_view = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=False, height=200, width=700)
+    robot_list_view = ft.ListView(
+        expand=1, 
+        spacing=10, 
+        padding=20, 
+        auto_scroll=False, 
+        height=250, 
+        width=700)
 
     def build_robot_list(robot_list: list[Robot]):
         robot_list_view.controls.clear()
+        encabezado = ft.Row(
+            controls=[
+                ft.Container(
+                    content=ft.Text(
+                        value="Nombre", 
+                        expand=1,
+                        text_align=ft.TextAlign.CENTER,
+                        style=ft.TextStyle(
+                            size=16,
+                            weight=ft.FontWeight.W_500,
+                            color=ft.colors.BLACK
+                        )
+                    ),
+                    bgcolor=ft.colors.GREY_400,
+                    padding=10,
+                    expand=1,
+                    alignment=ft.alignment.center
+                ),
+                ft.Container(
+                    content=ft.Text(
+                        value="Modelo",
+                        expand=1,
+                        text_align=ft.TextAlign.CENTER,
+                        style=ft.TextStyle(
+                            size=14,
+                            weight=ft.FontWeight.W_500,
+                            color="black"
+                        )
+                    ),
+                    padding=10,
+                    expand=2,
+                    alignment=ft.alignment.center,
+                    bgcolor=ft.colors.GREY_400
+                ),
+                ft.Container(
+                    content=ft.Text(
+                        value="Tipo control",
+                        expand=1,
+                        text_align=ft.TextAlign.CENTER,
+                        style=ft.TextStyle(
+                            size=14,
+                            weight=ft.FontWeight.W_500,
+                            color="black"
+                        )
+                    ),
+                    padding=10,
+                    expand=2,
+                    bgcolor=ft.colors.GREY_400,
+                    alignment=ft.alignment.center
+                ),
+            ],
+            height=45,
+            width=700,
+            spacing=10,
+            alignment=ft.MainAxisAlignment.CENTER
+        )
+        robot_list_view.controls.append(encabezado)
         for robot in robot_list:
             fila = robot.build()
             robot_list_view.controls.append(fila)
@@ -66,46 +132,37 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
     def sign_out(e):
         myPyrebase.sign_out()
         page.go('/')
+        page.update()
 
     add_robots_button = ft.ElevatedButton(
-        text="Agregar robots", 
+        text="Robots", 
         icon=ft.icons.ADD_BOX, 
         on_click=show_add_robot,
         width=200)
     add_models_button = ft.ElevatedButton(
-        text="Agregar modelos", 
-        icon=ft.icons.ADD_ALERT, 
+        text="Modelos", 
+        icon=ft.icons.CALENDAR_VIEW_MONTH_ROUNDED, 
         on_click=add_model_robot,
         width=200)
     add_world_button = ft.ElevatedButton(
-        text="Agregar mundo",
-        icon=ft.icons.ADD_CARD,
+        text="Mundos",
+        icon=ft.icons.ASSURED_WORKLOAD_ROUNDED,
         on_click=go_worlds,
         width=200)
-    active_robot_text = ft.Text(
-        value="Robots disponibles", 
-        size=40, 
-        style=ft.TextStyle(weight=ft.FontWeight.BOLD), 
-        text_align=ft.TextAlign.CENTER)
     add_configure_button = ft.ElevatedButton(
         text="Entornos",
-        icon=ft.icons.AC_UNIT,
+        icon=ft.icons.APARTMENT_ROUNDED,
         on_click=go_environments,
         width=200)
     configure_rutina = ft.ElevatedButton(
         text='Rutinas',
-        icon=ft.icons.TASK,
+        icon=ft.icons.BOOK_OUTLINED,
         on_click=go_configure_rutina,
         width=200)
     monitoreo_rutina = ft.ElevatedButton(
-        text='Monitorear rutinas',
-        icon=ft.icons.DATA_EXPLORATION,
+        text='Monitoreo',
+        icon=ft.icons.DATA_EXPLORATION_OUTLINED,
         on_click=go_monitoreo,
-        width=200)
-    cerrar_sesion = ft.ElevatedButton(
-        text='Cerrar sesion',
-        icon=ft.icons.LOGOUT,
-        on_click=sign_out,
         width=200)
 
     build_robot_list(all_robots)
@@ -159,37 +216,54 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
             spacing=40,
             controls=[
                 ft.Container(
-                    active_robot_text, 
-                    alignment=ft.alignment.center),
+                    height=10),
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    controls=[
+                        add_models_button,
+                        add_robots_button,
+                        add_world_button]),
                 ft.Container(
                     robot_list_view,
                     alignment=ft.alignment.center),
-                ft.Column(
+                ft.Row(
+                    alignment=ft.MainAxisAlignment.CENTER,
                     controls=[
-                        ft.Row(
-                            alignment=ft.MainAxisAlignment.CENTER,
-                            controls=[
-                                add_models_button,
-                                add_robots_button,
-                                add_world_button]),
-                        ft.Row(
-                            alignment=ft.MainAxisAlignment.CENTER,
-                            controls=[
-                                add_configure_button,
-                                configure_rutina,
-                                monitoreo_rutina])],
-                    alignment=ft.MainAxisAlignment.CENTER),
-                ft.Container(
-                    content=cerrar_sesion,
-                    alignment=ft.alignment.center)
-                ],
+                        add_configure_button,
+                        configure_rutina,
+                        monitoreo_rutina]),],
             alignment=ft.MainAxisAlignment.CENTER
         ),
         
     )
 
     def on_page_load():
-        pass
+        nonlocal modelos, all_robots
+        modelos = obtain_model_list()
+        all_robots = obtain_robot_list()
+        build_robot_list(all_robots)
+        page.window_maximized = False
+        page.appbar = ft.AppBar(
+            leading=ft.IconButton(
+                icon=ft.icons.ROCKET_LAUNCH),
+            leading_width=60,
+            title=ft.Text(
+                value="Robots disponibles",
+                style=ft.TextStyle(
+                    size=40,
+                    weight=ft.FontWeight.BOLD)),
+            center_title=True,
+            bgcolor=ft.colors.GREY_200,
+            actions=[
+                ft.PopupMenuButton(
+                    items=[
+                        ft.PopupMenuItem(
+                            text=str(myPyrebase.email)),
+                        ft.PopupMenuItem(
+                            text="Cerrar Sesion",
+                            icon=ft.icons.LOGOUT_ROUNDED,
+                            on_click=sign_out)])])
+        page.update()
 
     return {
         "view":myPage,
