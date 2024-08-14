@@ -61,13 +61,14 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
                         style=ft.TextStyle(
                             size=16,
                             weight=ft.FontWeight.W_500,
-                            color=ft.colors.BLACK
+                            color=ft.colors.GREY_100,
                         )
                     ),
-                    bgcolor=ft.colors.GREY_400,
                     padding=10,
-                    expand=1,
-                    alignment=ft.alignment.center
+                    expand=2,
+                    bgcolor=ft.colors.GREY_600,
+                    alignment=ft.alignment.center,
+                    border_radius=ft.BorderRadius(5, 5, 5, 5),
                 ),
                 ft.Container(
                     content=ft.Text(
@@ -75,15 +76,16 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
                         expand=1,
                         text_align=ft.TextAlign.CENTER,
                         style=ft.TextStyle(
-                            size=14,
+                            size=16,
                             weight=ft.FontWeight.W_500,
-                            color="black"
+                            color=ft.colors.GREY_100,
                         )
                     ),
                     padding=10,
                     expand=2,
+                    bgcolor=ft.colors.GREY_600,
                     alignment=ft.alignment.center,
-                    bgcolor=ft.colors.GREY_400
+                    border_radius=ft.BorderRadius(5, 5, 5, 5),
                 ),
                 ft.Container(
                     content=ft.Text(
@@ -91,15 +93,16 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
                         expand=1,
                         text_align=ft.TextAlign.CENTER,
                         style=ft.TextStyle(
-                            size=14,
+                            size=16,
                             weight=ft.FontWeight.W_500,
-                            color="black"
+                            color=ft.colors.GREY_100,
                         )
                     ),
                     padding=10,
                     expand=2,
-                    bgcolor=ft.colors.GREY_400,
-                    alignment=ft.alignment.center
+                    bgcolor=ft.colors.GREY_600,
+                    alignment=ft.alignment.center,
+                    border_radius=ft.BorderRadius(5, 5, 5, 5),
                 ),
             ],
             height=45,
@@ -135,35 +138,125 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
         page.update()
 
     add_robots_button = ft.ElevatedButton(
-        text="Robots", 
-        icon=ft.icons.ADD_BOX, 
+        content=ft.Container(
+            content=ft.Row(
+                controls=[
+                    ft.Icon(ft.icons.ADD_BOX, size=18),
+                    ft.Text("Robots", size=18),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+            ),
+            alignment=ft.alignment.center,
+        ),
         on_click=show_add_robot,
-        width=200)
+        width=200, 
+        height=40,
+        style=ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(radius=8),  
+            color={"": ft.colors.WHITE},  
+            bgcolor={"": ft.colors.TEAL_ACCENT_700},
+        )
+    )
     add_models_button = ft.ElevatedButton(
-        text="Modelos", 
-        icon=ft.icons.CALENDAR_VIEW_MONTH_ROUNDED, 
+        content=ft.Container(
+            content=ft.Row(
+                controls=[
+                    ft.Icon(ft.icons.CALENDAR_VIEW_MONTH_ROUNDED, size=18),
+                    ft.Text("Modelos", size=18),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+            ),
+            alignment=ft.alignment.center,
+        ),
         on_click=add_model_robot,
-        width=200)
+        width=200,
+        height=40,
+        style=ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(radius=8),  
+            color={"": ft.colors.WHITE},  
+            bgcolor={"": ft.colors.TEAL_ACCENT_700}, 
+        )
+    )
     add_world_button = ft.ElevatedButton(
-        text="Mundos",
-        icon=ft.icons.ASSURED_WORKLOAD_ROUNDED,
+        content=ft.Container(
+            content=ft.Row(
+                controls=[
+                    ft.Icon(ft.icons.ASSURED_WORKLOAD_ROUNDED, size=18),
+                    ft.Text("Mundos", size=18),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+            ),
+            alignment=ft.alignment.center,
+        ),
         on_click=go_worlds,
-        width=200)
+        width=200,
+        height=40,
+        style=ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(radius=8),  
+            color={"": ft.colors.WHITE},  
+            bgcolor={"": ft.colors.TEAL_ACCENT_700}, 
+        )
+    )
     add_configure_button = ft.ElevatedButton(
-        text="Entornos",
-        icon=ft.icons.APARTMENT_ROUNDED,
+        content=ft.Container(
+            content=ft.Row(
+                controls=[
+                    ft.Icon(ft.icons.APARTMENT_ROUNDED, size=18),
+                    ft.Text("Entornos", size=18),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+            ),
+            alignment=ft.alignment.center,
+        ),
         on_click=go_environments,
-        width=200)
+        width=200,
+        height=40,
+        style=ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(radius=8),  
+            color={"": ft.colors.WHITE},  
+            bgcolor={"": ft.colors.CYAN_ACCENT_700}, 
+        )
+    )
     configure_rutina = ft.ElevatedButton(
-        text='Rutinas',
-        icon=ft.icons.BOOK_OUTLINED,
+        content=ft.Container(
+            content=ft.Row(
+                controls=[
+                    ft.Icon(ft.icons.BOOK_OUTLINED, size=18),
+                    ft.Text("Rutinas", size=18),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+            ),
+            alignment=ft.alignment.center,
+        ),
         on_click=go_configure_rutina,
-        width=200)
+        width=200,
+        height=40,
+        style=ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(radius=8),  
+            color={"": ft.colors.WHITE},  
+            bgcolor={"": ft.colors.CYAN_ACCENT_700}, 
+        )
+    )
     monitoreo_rutina = ft.ElevatedButton(
-        text='Monitoreo',
-        icon=ft.icons.DATA_EXPLORATION_OUTLINED,
+        content=ft.Container(
+            content=ft.Row(
+                controls=[
+                    ft.Icon(ft.icons.DATA_EXPLORATION_OUTLINED, size=18),
+                    ft.Text("Monitoreo", size=18),
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+            ),
+            alignment=ft.alignment.center,
+        ),
         on_click=go_monitoreo,
-        width=200)
+        width=200,
+        height=40,
+        style=ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(radius=8),  
+            color={"": ft.colors.WHITE},  
+            bgcolor={"": ft.colors.CYAN_ACCENT_700}, 
+        )
+    )
 
     build_robot_list(all_robots)
 
