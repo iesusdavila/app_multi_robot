@@ -123,46 +123,130 @@ def ConfigureWorld(page: ft.Page, myPyrebase: PyrebaseWrapper):
         add_robot_button.update()
 
     world_combobox = ft.Dropdown(
-        label="Mundo",
-        hint_text="Elige el mundo",
+        label="Seleccionar Mundo",
+        label_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
         width=300,
-        options=[ft.dropdown.Option(world.name) for world in world_list])
+        border_color=ft.colors.BLACK,
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        bgcolor=ft.colors.BLUE_GREY_50,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK))
     label_num_robots = ft.Text(
         value="Numero de robots",
-        style=ft.TextStyle(weight=ft.FontWeight.BOLD))
+        style=ft.TextStyle(
+            size=20,
+            weight=ft.FontWeight.BOLD))
     num_robots_input = ft.TextField(
         value="0",
-        text_align="right",
+        text_align="center",
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        border_color=ft.colors.BLACK,
+        disabled=True,
+        text_style=ft.TextStyle(
+            size=25,
+            color=ft.colors.BLACK),
         on_change=lambda e: on_num_robots_input_change(),
-        width=100)
+        width=70)
     add_value = ft.IconButton(
+        style=ft.ButtonStyle(
+            color={"": ft.colors.GREEN}),
+        scale=1.2,
         icon=ft.icons.ADD_CIRCLE,
         on_click=add_value_number)
     reduce_value = ft.IconButton(
+        scale=1.2,
+        style=ft.ButtonStyle(
+            color={"": ft.colors.RED}),
         icon=ft.icons.REMOVE_CIRCLE,
         on_click=reduce_value_number)
     save_button = ft.ElevatedButton(
-        text="Guardar",
-        icon=ft.icons.SAVE,
-        on_click=save_configuration)
+        content=ft.Container(
+            content=ft.Row(
+                controls=[
+                    ft.Icon(
+                        name=ft.icons.SAVE,
+                        size=18),
+                    ft.Text(
+                        value="Guardar",
+                        size=18)],
+                alignment=ft.MainAxisAlignment.CENTER),
+            alignment=ft.alignment.center),
+        on_click=save_configuration,
+        width=200,
+        height=40,
+        style=ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(radius=8),  
+            color={"": ft.colors.WHITE},  
+            bgcolor={"": ft.colors.BLUE_ACCENT_400}))
     robot_combobox = ft.Dropdown(
-        label="Robot",
-        hint_text="Seleccione un robot",
+        label="Seleccionar Robot",
+        label_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK,
+        ),
+        border_color=ft.colors.BLACK,
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        bgcolor=ft.colors.BLUE_GREY_50,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
+        width=290,
         options=[ft.dropdown.Option(robot.name) for robot in robot_list])
     x_pose = ft.TextField(
         label="Pose X",
+        label_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
+        border_color=ft.colors.BLACK,
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        bgcolor=ft.colors.BLUE_GREY_50,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
         width=90)
     y_pose = ft.TextField(
         label="Pose Y",
+        label_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
+        border_color=ft.colors.BLACK,
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        bgcolor=ft.colors.BLUE_GREY_50,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
         width=90)
     z_pose = ft.TextField(
         label="Pose Z",
+        label_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
+        border_color=ft.colors.BLACK,
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        bgcolor=ft.colors.BLUE_GREY_50,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
         width=90)
     yaw = ft.TextField(
         label="Yaw",
+        label_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
+        border_color=ft.colors.BLACK,
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        bgcolor=ft.colors.BLUE_GREY_50,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
         width=90)
     rviz_view = ft.Checkbox(
         label="Vista en RViz",
+        shape=ft.BeveledRectangleBorder(radius=8),
+        active_color=ft.colors.GREEN_400,
         value=False)
     save_path = ft.TextField(
         label="Nombre archivo configuracion")
@@ -188,8 +272,34 @@ def ConfigureWorld(page: ft.Page, myPyrebase: PyrebaseWrapper):
                     width=350,
                     height=300),
                 actions=[
-                    ft.TextButton("Guardar", on_click=save_robot),
-                    ft.TextButton("Cancelar", on_click=close_dialog)
+                    ft.TextButton(
+                        content=ft.Container(
+                            content=ft.Row(
+                                controls=[
+                                ft.Text("Guardar", size=18)],
+                                alignment=ft.MainAxisAlignment.CENTER),
+                        alignment=ft.alignment.center), 
+                        width=150,
+                        height=40,
+                        on_click=save_robot,
+                        style=ft.ButtonStyle(
+                        shape=ft.RoundedRectangleBorder(radius=8),  
+                        color={"": ft.colors.BLACK},  
+                        bgcolor={"": ft.colors.GREEN_ACCENT_400})),
+                    ft.TextButton(
+                        on_click=close_dialog,
+                        content=ft.Container(
+                            content=ft.Row(
+                                controls=[
+                                    ft.Text("Cancelar", size=18)],
+                                alignment=ft.MainAxisAlignment.CENTER),
+                        alignment=ft.alignment.center), 
+                        width=150,
+                        height=40,
+                        style=ft.ButtonStyle(
+                            shape=ft.RoundedRectangleBorder(radius=8),  
+                            color={"": ft.colors.BLACK},  
+                            bgcolor={"": ft.colors.BLUE_GREY_200}))
                 ],
                 actions_alignment=ft.MainAxisAlignment.END
             )
@@ -197,9 +307,18 @@ def ConfigureWorld(page: ft.Page, myPyrebase: PyrebaseWrapper):
             page.update()
         check_add_robot_button()
     
-    add_robot_button = ft.IconButton(
-        icon=ft.icons.ADD_CIRCLE,
-        on_click=add_robot)
+    add_robot_button = ft.ElevatedButton(
+        on_click=add_robot,
+        content=ft.Container(
+            content=ft.Text(
+                value="Agregar Robots",
+                size=15),
+            alignment=ft.alignment.center),
+        style=ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(radius=8),  
+            color={"": ft.colors.WHITE},  
+            bgcolor={"": ft.colors.CYAN_ACCENT_700}),
+        width=160)
     
     def go_gz_list(e):
         page.go("/environments")
@@ -233,6 +352,8 @@ def ConfigureWorld(page: ft.Page, myPyrebase: PyrebaseWrapper):
                     content=add_robot_button,
                     alignment=ft.alignment.center),
                 ft.Container(
+                    height=30),
+                ft.Container(
                     content=save_button,
                     alignment=ft.alignment.center)
             ],
@@ -265,12 +386,12 @@ def ConfigureWorld(page: ft.Page, myPyrebase: PyrebaseWrapper):
                 scale=1.2),
             leading_width=60,
             title=ft.Text(
-                value="Configurar Mundo Gazebo",
+                value="Configurar Gazebo",
                 style=ft.TextStyle(
-                    size=30,
+                    size=40,
                     weight=ft.FontWeight.BOLD)),
             center_title=True,
-            bgcolor=ft.colors.GREY_200,
+            bgcolor=ft.colors.GREY_300,
             actions=[
                 ft.PopupMenuButton(
                     scale=1.2,

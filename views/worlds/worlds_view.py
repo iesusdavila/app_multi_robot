@@ -15,11 +15,22 @@ def WorldsView(page: ft.Page, myPyrebase: PyrebaseWrapper):
         height=300, 
         width=300)
     name_input = ft.TextField(
-        label="Nombre mundo")
+        label="Nombre del Mundo",
+        label_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
+        border_color=ft.colors.BLACK,
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        bgcolor=ft.colors.BLUE_GREY_50,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK))
     world_path_label = ft.Text(
-        value="Ruta del mundo")
+        value="Ruta del Mundo",
+        style=ft.TextStyle(size=15, weight=ft.FontWeight.BOLD))
     map_label = ft.Text(
-        value="Ruta del mapa")
+        value="Ruta del Mapa",
+        style=ft.TextStyle(size=15, weight=ft.FontWeight.BOLD))
     world_path_picker = FileSelector()
     map_path = FileSelector()
 
@@ -91,8 +102,34 @@ def WorldsView(page: ft.Page, myPyrebase: PyrebaseWrapper):
             width=350,
             height=300),
         actions=[
-            ft.TextButton("Guardar", on_click=save_world),
-            ft.TextButton("Cancelar", on_click=close_dialog)
+            ft.TextButton(
+                content=ft.Container(
+                    content=ft.Row(
+                            controls=[
+                                ft.Text("Guardar", size=18)],
+                            alignment=ft.MainAxisAlignment.CENTER),
+                        alignment=ft.alignment.center), 
+                on_click=save_world,
+                width=150,
+                height=40,
+                style=ft.ButtonStyle(
+                        shape=ft.RoundedRectangleBorder(radius=8),  
+                        color={"": ft.colors.BLACK},  
+                        bgcolor={"": ft.colors.GREEN_ACCENT_400})),
+            ft.TextButton(
+                content=ft.Container(
+                    content=ft.Row(
+                            controls=[
+                                ft.Text("Cancelar", size=18)],
+                            alignment=ft.MainAxisAlignment.CENTER),
+                        alignment=ft.alignment.center), 
+                on_click=close_dialog,
+                width=150,
+                height=40,
+                style=ft.ButtonStyle(
+                        shape=ft.RoundedRectangleBorder(radius=8),  
+                        color={"": ft.colors.BLACK},  
+                        bgcolor={"": ft.colors.BLUE_GREY_200}))
         ],
         actions_alignment=ft.MainAxisAlignment.END
     )
@@ -145,10 +182,10 @@ def WorldsView(page: ft.Page, myPyrebase: PyrebaseWrapper):
             title=ft.Text(
                 value="Mundos Disponibles",
                 style=ft.TextStyle(
-                    size=30,
+                    size=40,
                     weight=ft.FontWeight.BOLD)),
             center_title=True,
-            bgcolor=ft.colors.GREY_200,
+            bgcolor=ft.colors.GREY_300,
             actions=[
                 ft.PopupMenuButton(
                     scale=1.2,

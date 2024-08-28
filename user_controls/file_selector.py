@@ -19,7 +19,7 @@ class FileSelector(ft.UserControl):
         self.file_path_label = ft.Text(
             value="Seleccionar Archivo", 
             expand=2)
-        self.select_button = ft.IconButton(icon=ft.icons.ARROW_CIRCLE_RIGHT_OUTLINED, on_click=self.select_file, expand=1)
+        self.select_button = ft.IconButton(icon=ft.icons.ARROW_CIRCLE_RIGHT_OUTLINED, on_click=self.select_file, expand=1, scale=1.2)
 
     def select_file(self, e):
         file_path = open_file_explorer()

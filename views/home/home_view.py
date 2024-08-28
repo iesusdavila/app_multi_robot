@@ -6,12 +6,11 @@ from db.flet_pyrebase import PyrebaseWrapper
 def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
     title = "Home"
 
-    modelos = obtain_model_list()
+    modelos = []
     all_robots = obtain_robot_list()
     control_types = ["Diferencial", "Omnidireccional", "Aerial"]
 
     def show_add_robot(e):
-        nonlocal modelos, combobox_model
         modelos = obtain_model_list()
         combobox_model.options = [ft.dropdown.Option(modelo.nombre) for modelo in modelos]
         page.dialog = ft.AlertDialog(
@@ -301,18 +300,14 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
         label="Nombre del Robot",
         label_style=ft.TextStyle(
             size=16,
-            color=ft.colors.BLACK,
-        ),
+            color=ft.colors.BLACK),
         border_color=ft.colors.BLACK,
         border_radius=ft.BorderRadius(8, 8, 8, 8),
         bgcolor=ft.colors.BLUE_GREY_50,
         text_style=ft.TextStyle(
             size=16,
-            color=ft.colors.BLACK,
-        ),
-    )
+            color=ft.colors.BLACK))
     combobox_model = ft.Dropdown(
-        options=[ft.dropdown.Option(modelo.nombre) for modelo in modelos],
         label="Seleccionar Modelo",
         label_style=ft.TextStyle(
             size=16,
@@ -324,8 +319,7 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
         text_style=ft.TextStyle(
             size=16,
             color=ft.colors.BLACK,
-        ),
-    )
+        ))
     combobox_control_type= ft.Dropdown(
         options=[ft.dropdown.Option(control_type) for control_type in control_types],
         label="Seleccionar Tipo de Control",
@@ -371,6 +365,7 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
         page.dialog.open = False
         combobox_control_type.value = ""
         combobox_model.value = ""
+        combobox_model.options = []
         name_input.value = ""
         has_camera.value = False
         page.update()
@@ -378,6 +373,7 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
     def close_dialog(e):
         combobox_control_type.value = ""
         combobox_model.value = ""
+        combobox_model.options = []
         name_input.value = ""
         has_camera.value = False
         page.dialog.open = False
@@ -428,7 +424,7 @@ def HomeView(page: ft.Page, myPyrebase: PyrebaseWrapper):
                     size=40,
                     weight=ft.FontWeight.BOLD)),
             center_title=True,
-            bgcolor=ft.colors.GREY_200,
+            bgcolor=ft.colors.GREY_300,
             actions=[
                 ft.PopupMenuButton(
                     scale=1.2,

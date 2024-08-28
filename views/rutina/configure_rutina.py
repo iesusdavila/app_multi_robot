@@ -39,24 +39,48 @@ def ConfigureRutina(page: ft.Page, myPyrebase: PyrebaseWrapper):
         check_camera.update()
     
     dropdown_entorno = ft.Dropdown(
-        label="Selecciona el entorno",
-        hint_text='No seleccionado',
+        label="Selecciona Entorno",
+        label_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
+        border_color=ft.colors.BLACK,
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        bgcolor=ft.colors.BLUE_GREY_50,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
+        hint_text='No Seleccionado',
         width=300,
-        options=[ft.dropdown.Option(name) for name in entornos_files],
         on_change=actualize_robots)
     
     dropdown_robot = ft.Dropdown(
-        label="Elige el robot",
-        hint_text='No seleccionado',
+        label="Elige un Robot",
+        label_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
+        border_color=ft.colors.BLACK,
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        bgcolor=ft.colors.BLUE_GREY_50,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
+        hint_text='No Seleccionado',
         width=300,
-        options=[ft.dropdown.Option(robot.name) for robot in robot_list],
         on_change=actualize_robot_current)
     
     dropdown_master = ft.Dropdown(
-        label="Nombre master",
-        hint_text="No seleccionado",
+        label="Nombre Master",
+        label_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
+        border_color=ft.colors.BLACK,
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        bgcolor=ft.colors.BLUE_GREY_50,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
+        hint_text="No Seleccionado",
         width=300,
-        options=[ft.dropdown.Option(robot.name) for robot in robot_list],
         disabled=False)
     
     def change_master(e):
@@ -85,6 +109,8 @@ def ConfigureRutina(page: ft.Page, myPyrebase: PyrebaseWrapper):
 
     check_master = ft.Checkbox(
         label="Es master?",
+        shape=ft.BeveledRectangleBorder(radius=8),
+        active_color=ft.colors.GREEN_400,
         value=False,
         on_change=change_master)
     
@@ -112,37 +138,61 @@ def ConfigureRutina(page: ft.Page, myPyrebase: PyrebaseWrapper):
 
     check_camera = ft.Checkbox(
         label="Usa camara",
+        shape=ft.BeveledRectangleBorder(radius=8),
+        active_color=ft.colors.GREEN_400,
         value=False)
     
     check_max_time = ft.Checkbox(
         label="Usa tiempo max",
+        shape=ft.BeveledRectangleBorder(radius=8),
+        active_color=ft.colors.GREEN_400,
         value=False,
         on_change=change_max_time)
     
     check_hierarchy = ft.Checkbox(
         label="Hereda tiempo",
+        shape=ft.BeveledRectangleBorder(radius=8),
+        active_color=ft.colors.GREEN_400,
         value=True,
         disabled=True)
     
     duration_time = ft.TextField(
         label="Duracion (min)",
-        value=0,
+        text_align="center",
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        border_color=ft.colors.BLACK,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
+        value="0",
         width=100,
         disabled=True)
     
     pose_goals_field = ft.TextField(
         label="Poses goals",
-        width=150,
+        width=80,
         height=60,
-        value=0,
+        text_align="center",
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        border_color=ft.colors.BLACK,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
+        value="0",
         disabled=True)
     
     add_num_pose_button = ft.IconButton(
         icon=ft.icons.ADD_CIRCLE,
+        style=ft.ButtonStyle(
+            color={"": ft.colors.GREEN}),
+        scale=1.2,
         on_click=add_num_poses)
     
     remove_num_pose_button = ft.IconButton(
         icon=ft.icons.REMOVE_CIRCLE,
+        scale=1.2,
+        style=ft.ButtonStyle(
+            color={"": ft.colors.RED}),
         on_click=remove_num_poses)
     
     pose_table = ft.Column(
@@ -152,18 +202,42 @@ def ConfigureRutina(page: ft.Page, myPyrebase: PyrebaseWrapper):
     
     x_pose = ft.TextField(
         label="Pose X",
+        text_align="center",
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        border_color=ft.colors.BLACK,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
         width=80)
     
     y_pose = ft.TextField(
         label="Pose Y",
+        text_align="center",
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        border_color=ft.colors.BLACK,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
         width=80)
     
     z_pose = ft.TextField(
         label="Pose Z",
+        text_align="center",
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        border_color=ft.colors.BLACK,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
         width=80)
     
     yaw = ft.TextField(
         label="Yaw",
+        text_align="center",
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        border_color=ft.colors.BLACK,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
         width=80)
 
     def configure_pose(e):
@@ -229,7 +303,26 @@ def ConfigureRutina(page: ft.Page, myPyrebase: PyrebaseWrapper):
         page.update()
     
     add_pose = ft.IconButton(
-        icon=ft.icons.ADD_CIRCLE,
+        content=ft.Container(
+            content=ft.Row(
+                controls=[
+                    ft.Icon(
+                        name=ft.icons.ADD,
+                        size=11),
+                    ft.Text(
+                        value="Agregar pose",
+                        size=12,
+                        style=ft.TextStyle(
+                            weight=ft.FontWeight.BOLD,
+                            color=ft.colors.WHITE))],
+                alignment=ft.MainAxisAlignment.CENTER),
+            alignment=ft.alignment.center),
+        width=130,
+        height=35,
+        style=ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(radius=8),  
+            color={"": ft.colors.WHITE},  
+            bgcolor={"": ft.colors.BLUE_ACCENT_400}),
         on_click=configure_pose)
     
     def save_configuration_robot(e):
@@ -323,13 +416,17 @@ def ConfigureRutina(page: ft.Page, myPyrebase: PyrebaseWrapper):
         page.update()
 
     def on_page_load():
+        page.window_min_width, page.window_max_width = 400, 400
+        page.window_min_height, page.window_max_height = 400, 400
         nonlocal entornos_files
         entornos_files = list_files_in_directory(gazebo_dir)
         dropdown_entorno.options = [ft.dropdown.Option(name) for name in entornos_files]
         page.appbar = ft.AppBar(
+            toolbar_height=65,
             leading=ft.IconButton(
                 icon=ft.icons.ARROW_BACK_ROUNDED,
-                on_click=go_list_rutinas),
+                on_click=go_list_rutinas,
+                scale=1.2),
             leading_width=60,
             title=ft.Text(
                 value="Configurar rutina",
@@ -337,9 +434,10 @@ def ConfigureRutina(page: ft.Page, myPyrebase: PyrebaseWrapper):
                     size=30,
                     weight=ft.FontWeight.BOLD)),
             center_title=True,
-            bgcolor=ft.colors.GREY_200,
+            bgcolor=ft.colors.GREY_300,
             actions=[
                 ft.PopupMenuButton(
+                    scale=1.2,
                     items=[
                         ft.PopupMenuItem(
                             text=str(myPyrebase.email)),
@@ -381,9 +479,15 @@ def ConfigureRutina(page: ft.Page, myPyrebase: PyrebaseWrapper):
                     alignment=ft.MainAxisAlignment.CENTER),
                 ft.Row(
                     controls=[
-                        pose_goals_field,
-                        add_num_pose_button,
-                        remove_num_pose_button],
+                        ft.Container(
+                            content=add_num_pose_button,
+                            alignment=ft.alignment.center),
+                        ft.Container(
+                            content=pose_goals_field,
+                            alignment=ft.alignment.center),
+                        ft.Container(
+                            content=remove_num_pose_button,
+                            alignment=ft.alignment.center)],
                     alignment=ft.MainAxisAlignment.CENTER),
                 ft.Row(
                     alignment=ft.MainAxisAlignment.CENTER,

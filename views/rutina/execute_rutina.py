@@ -52,9 +52,24 @@ def ExecuteRutina(page: ft.Page, myPyrebase: PyrebaseWrapper):
         page.update()
 
     add_rutina = ft.ElevatedButton(
-        text="Agregar rutina",
-        icon=ft.icons.ADD,
-        on_click=go_config_rutina)
+        content=ft.Container(
+            content=ft.Row(
+                controls=[
+                    ft.Icon(
+                        name=ft.icons.ADD, 
+                        size=18),
+                    ft.Text(
+                        value="Agregar rutina", 
+                        size=18)],
+                alignment=ft.MainAxisAlignment.CENTER),
+            alignment=ft.alignment.center),
+        on_click=go_config_rutina,
+        width=220, 
+        height=40,
+        style=ft.ButtonStyle(
+            shape=ft.RoundedRectangleBorder(radius=8),  
+            color={"": ft.colors.WHITE},  
+            bgcolor={"": ft.colors.TEAL_ACCENT_700}))
     
     def go_home(e):
         page.go("/home")
@@ -101,9 +116,11 @@ def ExecuteRutina(page: ft.Page, myPyrebase: PyrebaseWrapper):
         list_rutina_files = list_files_in_directory(rutina_dir)
         build_table(list_rutina_files)
         page.appbar = ft.AppBar(
+            toolbar_height=65,
             leading=ft.IconButton(
                 icon=ft.icons.HOME,
-                on_click=go_home),
+                on_click=go_home,
+                scale=1.2),
             leading_width=60,
             title=ft.Text(
                 value="Rutinas",
@@ -111,9 +128,10 @@ def ExecuteRutina(page: ft.Page, myPyrebase: PyrebaseWrapper):
                     size=30,
                     weight=ft.FontWeight.BOLD)),
             center_title=True,
-            bgcolor=ft.colors.GREY_200,
+            bgcolor=ft.colors.GREY_300,
             actions=[
                 ft.PopupMenuButton(
+                    scale=1.2,
                     items=[
                         ft.PopupMenuItem(
                             disabled=True,

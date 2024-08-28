@@ -48,18 +48,28 @@ def ModeloView(page: ft.Page, myPyrebase: PyrebaseWrapper):
     
     construir_tabla(modelo_list)
     
-    nombre_input = ft.TextField(label="Nombre del modelo")
+    nombre_input = ft.TextField(
+        label="Nombre del Modelo",
+        label_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
+        border_color=ft.colors.BLACK,
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
+        bgcolor=ft.colors.BLUE_GREY_50,
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK))
     urdf_input = ft.Text(
         value="Ruta URDF",
-        style=ft.TextStyle(weight=ft.FontWeight.BOLD))
+        style=ft.TextStyle(size=15, weight=ft.FontWeight.BOLD))
     urdf_picker = FileSelector()
     sdf_input = ft.Text(
         value="Ruta SDF",
-        style=ft.TextStyle(weight=ft.FontWeight.BOLD))
+        style=ft.TextStyle(size=15, weight=ft.FontWeight.BOLD))
     sdf_picker = FileSelector()
     nav_path_input = ft.Text(
-        value="Ruta archivo navegacion",
-        style=ft.TextStyle(weight=ft.FontWeight.BOLD))
+        value="Ruta Navegacion",
+        style=ft.TextStyle(size=15, weight=ft.FontWeight.BOLD))
     nav_picker = FileSelector()
 
     def save_model(e):

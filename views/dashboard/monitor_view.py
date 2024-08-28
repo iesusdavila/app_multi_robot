@@ -93,7 +93,16 @@ def MonitorView(page: ft.Page, myPyrebase: PyrebaseWrapper):
 
     dropdown_camera = ft.Dropdown(
         label="Elige un tópico",
+        label_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK,
+        ),
+        border_color=ft.colors.BLACK,
+        border_radius=ft.BorderRadius(8, 8, 8, 8),
         hint_text="No seleccionado",
+        text_style=ft.TextStyle(
+            size=16,
+            color=ft.colors.BLACK),
         width=500,
         options=[ft.dropdown.Option(topic) for topic in camera_topics],
         on_change=actualize_image
@@ -136,9 +145,10 @@ def MonitorView(page: ft.Page, myPyrebase: PyrebaseWrapper):
                             style=ft.TextStyle(
                                 size=16,
                                 weight=ft.FontWeight.W_500,
-                                color=ft.colors.BLACK)),
-                        bgcolor=ft.colors.GREY_400,
+                                color=ft.colors.GREY_100)),
+                        bgcolor=ft.colors.GREY_600,
                         padding=10,
+                        border_radius=ft.BorderRadius(5, 5, 5, 5),
                         expand=2,
                         alignment=ft.alignment.center),
                     ft.Container(
@@ -149,11 +159,12 @@ def MonitorView(page: ft.Page, myPyrebase: PyrebaseWrapper):
                             style=ft.TextStyle(
                                 size=14,
                                 weight=ft.FontWeight.W_500,
-                                color="black")),
+                                color=ft.colors.GREY_100)),
                         padding=10,
                         expand=1,
                         alignment=ft.alignment.center,
-                        bgcolor=ft.colors.GREY_400),
+                        border_radius=ft.BorderRadius(5, 5, 5, 5),
+                        bgcolor=ft.colors.GREY_600),
                     ft.Container(
                         content=ft.Text(
                             value="Pos Y",
@@ -162,10 +173,11 @@ def MonitorView(page: ft.Page, myPyrebase: PyrebaseWrapper):
                             style=ft.TextStyle(
                                 size=14,
                                 weight=ft.FontWeight.W_500,
-                                color="black")),
+                                color=ft.colors.GREY_100)),
                         padding=10,
                         expand=1,
-                        bgcolor=ft.colors.GREY_400,
+                        bgcolor=ft.colors.GREY_600,
+                        border_radius=ft.BorderRadius(5, 5, 5, 5),
                         alignment=ft.alignment.center)],
                 height=45,
                 width=700,
@@ -185,11 +197,12 @@ def MonitorView(page: ft.Page, myPyrebase: PyrebaseWrapper):
                             text_align=ft.TextAlign.CENTER,
                             style=ft.TextStyle(
                                 size=16,
-                                weight=ft.FontWeight.W_500,
+                                weight=ft.FontWeight.NORMAL,
                                 color=ft.colors.BLACK)),
-                        bgcolor=ft.colors.GREY_100,
+                        bgcolor=ft.colors.GREY_300,
                         padding=10,
                         expand=2,
+                        border_radius=ft.BorderRadius(5, 5, 5, 5),
                         alignment=ft.alignment.center),
                     ft.Container(
                         content=ft.Text(
@@ -198,12 +211,13 @@ def MonitorView(page: ft.Page, myPyrebase: PyrebaseWrapper):
                             text_align=ft.TextAlign.CENTER,
                             style=ft.TextStyle(
                                 size=14,
-                                weight=ft.FontWeight.W_500,
-                                color="black")),
+                                weight=ft.FontWeight.NORMAL,
+                                color=ft.colors.BLACK)),
                         padding=10,
                         expand=1,
                         alignment=ft.alignment.center,
-                        bgcolor=ft.colors.GREY_100),
+                        border_radius=ft.BorderRadius(5, 5, 5, 5),
+                        bgcolor=ft.colors.GREY_300),
                     ft.Container(
                         content=ft.Text(
                             value=str(pos_y),
@@ -211,11 +225,12 @@ def MonitorView(page: ft.Page, myPyrebase: PyrebaseWrapper):
                             text_align=ft.TextAlign.CENTER,
                             style=ft.TextStyle(
                                 size=14,
-                                weight=ft.FontWeight.W_500,
-                                color="black")),
+                                weight=ft.FontWeight.NORMAL,
+                                color=ft.colors.BLACK)),
                         padding=10,
                         expand=1,
-                        bgcolor=ft.colors.GREY_100,
+                        bgcolor=ft.colors.GREY_300,
+                        border_radius=ft.BorderRadius(5, 5, 5, 5),
                         alignment=ft.alignment.center)],
                 height=45,
                 width=700,
